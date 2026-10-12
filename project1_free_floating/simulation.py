@@ -49,9 +49,11 @@ def rhs(t, x):
     return np.concatenate([qd, d.accelerations(q, qd, tau)])
 
 
-def simulate(q0=None, n_points=1501):
+def simulate(q0=None, qd0=None, n_points=1501):
+    """Integrate the motion. Default: start at q = 0, at rest."""
     q0 = np.zeros(5) if q0 is None else np.asarray(q0, float)
-    x0 = np.concatenate([q0, np.zeros(5)])           # start at rest
+    qd0 = np.zeros(5) if qd0 is None else np.asarray(qd0, float)
+    x0 = np.concatenate([q0, qd0])
     t_eval = np.linspace(0, T_END, n_points)
     sol = solve_ivp(rhs, (0, T_END), x0, t_eval=t_eval, method="DOP853",
                     rtol=1e-10, atol=1e-12)
