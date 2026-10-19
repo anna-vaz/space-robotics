@@ -40,7 +40,8 @@ KP_B, KD_B = I_STACK * WN**2, 2 * ZETA * WN * I_STACK
 TH_REF = 0.0                      # bring the base back to its original attitude
 
 
-def reach(q0):
+def reach(q0, t_grasp=None):
+    t_grasp = T_GRASP if t_grasp is None else t_grasp
     guid = rc.Guidance(gj.end_effector(q0))
 
     def rhs(t, x):
@@ -48,7 +49,7 @@ def reach(q0):
         tau, _ = rc.joint_torques(t, q, qd, guid)
         return np.concatenate([qd, d.accelerations(q, qd, tau)])
 
-    sol = solve_ivp(rhs, (0, T_GRASP), np.concatenate([q0, np.zeros(5)]),
+    sol = solve_ivp(rhs, (0, t_grasp), np.concatenate([q0, np.zeros(5)]),
                     method="DOP853", rtol=1e-9, atol=1e-11, max_step=0.05)
     return sol.y[:5, -1], sol.y[5:, -1]
 
@@ -84,16 +85,18 @@ def total_L(x):
             + tg.I_T * xt[5] + I_W * W)
 
 
-def run(spin_deg, t_detumble=400.0, n_out=4001):
+def run(spin_deg, t_detumble=400.0, n_out=4001, mass=50.0, inertia_factor=1.0,
+        t_grasp=T_GRASP, k_grip=K_GRIP):
     tg.set_spin(spin_deg)
+    tg.set_target(mass, inertia_factor)
     q0 = np.radians([0, 0, 0, 30, 100]); q0[:2] = 0
-    qg, qdg = reach(q0)
-    c, th, v, w = tg.state(T_GRASP)
+    qg, qdg = reach(q0, t_grasp)
+    c, th, v, w = tg.state(t_grasp)
     xt = np.array([*c, th, *v, w])
-    grip = ct.Gripper(K_GRIP)
+    grip = ct.Gripper(k_grip)
     grip.d0 = xt[2] - ct.JPHI2 @ qg
     x0 = np.concatenate([qg, qdg, xt, [0.0]])
     t = np.linspace(0, t_detumble, n_out)
     sol = solve_ivp(detumble_rhs, (0, t_detumble), x0, t_eval=t, args=(grip, qg[3:]),
                     method="DOP853", rtol=1e-9, atol=1e-11, max_step=0.02)
-    return dict(t=t, X=sol.y.T, spin=spin_deg, q_grasp=qg)
+    return dict(t=t, X=sol.y.T, spin=spin_deg, q_grasp=qg, grip=grip, ok=bool(sol.success))

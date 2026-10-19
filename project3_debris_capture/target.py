@@ -19,6 +19,13 @@ T_FACE = 30.0                      # the handle faces the chaser (points at -135
 TH0 = np.radians(-135.0) - W_T * T_FACE   # handle angle at t = 0  (= 135 deg for 3 deg/s)
 
 
+def set_target(mass, inertia_factor=1.0):
+    """Change the (unknown in reality) mass and inertia of the debris."""
+    global M_T, I_T
+    M_T = mass
+    I_T = inertia_factor * mass * (A_T**2 + A_T**2) / 12
+
+
 def set_spin(deg_per_s):
     """Change the tumble rate, keeping the handle facing the chaser at t = T_FACE."""
     global W_T, TH0

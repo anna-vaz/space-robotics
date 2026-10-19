@@ -19,6 +19,14 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![docking](project2_rendezvous/figures/docking.gif)
 
+3. **`project3_debris_capture/`** – capture of a tumbling piece of debris by the
+   free-floating robot of project 1: generalized Jacobian and dynamic
+   singularities, reaching a moving handle, compliant and rigid grasp contact,
+   reaction-wheel detumbling, and a 200-mission Monte Carlo over the unknown
+   debris properties.
+
+   ![capture](project3_debris_capture/figures/capture.gif)
+
 ## Setup
 
 ```bash
