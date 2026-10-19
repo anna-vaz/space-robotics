@@ -14,8 +14,16 @@ HANDLE_R = 0.6                     # handle distance from the target centre [m]
 
 C0 = np.array([1.9, 1.4])          # target centre at t = 0 [m]
 V_T = np.array([0.0, 0.0])         # target centre velocity [m/s]
-TH0 = np.radians(135.0)            # handle angle at t = 0
 W_T = np.radians(3.0)              # spin rate [rad/s]  (3 deg/s, 2 min per turn)
+T_FACE = 30.0                      # the handle faces the chaser (points at -135 deg) at t = 30 s
+TH0 = np.radians(-135.0) - W_T * T_FACE   # handle angle at t = 0  (= 135 deg for 3 deg/s)
+
+
+def set_spin(deg_per_s):
+    """Change the tumble rate, keeping the handle facing the chaser at t = T_FACE."""
+    global W_T, TH0
+    W_T = np.radians(deg_per_s)
+    TH0 = np.radians(-135.0) - W_T * T_FACE
 
 
 def state(t):
