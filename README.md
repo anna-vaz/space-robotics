@@ -27,6 +27,13 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![capture](project3_debris_capture/figures/capture.gif)
 
+4. **`project4_flexible_spacecraft/`** (MATLAB) – a spacecraft slewing with flexible solar
+   panels whose stiffness is uncertain: hub + cantilever-mode model checked against finite
+   elements, rigid PD, input shaping (ZV/ZVD/EI), nominal H∞, μ-synthesis and a structured robust
+   H∞ controller, a 300-spacecraft Monte Carlo and a Simulink cross-check.
+
+   ![flexible slew](project4_flexible_spacecraft/figures/flexible_slew.gif)
+
 ## Setup
 
 ```bash
