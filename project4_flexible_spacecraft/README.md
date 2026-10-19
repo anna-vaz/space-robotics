@@ -12,7 +12,7 @@ Everything in this project is MATLAB (Control System and Robust Control Toolboxe
 
 1. **Model**: rigid hub + cantilever bending modes (hybrid model), checked against an independent finite-element model. *(done)*
 2. **Baseline slew with PD control**: rigid-body design, then measure the panel vibration it causes. *(done)*
-3. **Input shaping**: ZV / ZVD command shaping and its sensitivity to errors in the panel frequency.
+3. **Input shaping**: ZV / ZVD command shaping and its sensitivity to errors in the panel frequency. *(done)*
 4. **Robust control**: uncertain panel stiffness and damping, an H∞ / μ-synthesis controller, worst-case analysis, comparison with steps 2 and 3.
 5. **Simulink, animation and write-up.**
 
@@ -86,3 +86,44 @@ damping is tiny (ζ = 0.5 %, e-folding time 69 s).
 ![step 2](figures/step2_pd_slew.png)
 
 Run: `matlab -batch step2_pd_slew` (about 30 s).
+
+## Step 3 – input shaping
+
+Convolve the bang-bang command with a few impulses spaced half a vibration period apart:
+the vibration started by one impulse is cancelled by the next (Singer & Seering 1990).
+Shapers are tuned to the closed-loop panel mode (0.4623 Hz, ζ = 3.2 %) of step 2
+(`input_shaper.m`, `step3_input_shaping.m`).
+
+| shaper | impulses | slew ends | residual tip | settled |
+|---|---|---|---|---|
+| none | 1 | 40.32 s | 2.95 mm | 65.4 s |
+| ZV | 2, over ½ period | 41.40 s | 0.018 mm | 52.3 s |
+| ZVD | 3, over 1 period | 42.48 s | 0.015 mm | 52.8 s |
+| EI (5 %) | 3, over 1 period | 42.48 s | 0.137 mm | 53.5 s |
+
+At the nominal panel stiffness every shaper removes 95–99.5 % of the vibration for
+1–2 s of extra slew time. The remaining ~10 s to settle is the slow (0.05 Hz) PD loop
+correcting the hub error the panels caused during the slew, not vibration.
+
+**But the shaper must know the panel frequency.** Sweeping the true stiffness from 0.5× to
+1.5× the design value (bottom right, log scale), the range where the residual stays below
+0.5 mm is:
+
+| shaper | stiffness range | panel frequency error tolerated |
+|---|---|---|
+| none | nowhere | – |
+| ZV | 0.85 – 1.44 × | −8 % … +20 % |
+| ZVD | 0.65 – 1.50 × | −20 % … +23 % |
+| EI | 0.55 – 1.50 × | −26 % … +23 % |
+
+The dotted curves are the hand formula: shaped residual = unshaped residual ×
+$|\sum_i A_i e^{\lambda(t_n-t_i)}|$ with the *true* panel pole λ. It agrees with the simulation
+(median difference 0.014 mm; worst 6 %, at 0.5× stiffness); near the design point the simulated
+floor of ~0.02 mm is the 2.5 Hz mode, which the shapers do not target.
+
+Input shaping is open loop: it does nothing against disturbances or unexpected changes and
+does not add damping. Step 4 attacks the same uncertainty with feedback.
+
+![step 3](figures/step3_input_shaping.png)
+
+Run: `matlab -batch step3_input_shaping` (about 30 s; needs `results_step2.mat` from step 2).
