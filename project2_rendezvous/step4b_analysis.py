@@ -47,6 +47,8 @@ def summary(name, runs):
 A, B = campaign(1.0), campaign(3.0)
 C_path = os.path.join(HERE, "results_step4b_retuned.json")
 C = json.load(open(C_path))["runs"] if os.path.exists(C_path) else []
+D_path = os.path.join(HERE, "results_step4b_retuned_x1.json")
+Dr = json.load(open(D_path))["runs"] if os.path.exists(D_path) else []
 nom = D["nominal"]
 print(f"Nominal (no errors, 1 Hz control): dv {nom['dv']:.3f} m/s, lateral {nom['lateral']*100:.4f} cm")
 summary("Campaign A: nominal uncertainty (x1)", A)
@@ -55,6 +57,13 @@ if C:
     summary("Campaign C: x3 errors, Kalman filter retuned", C)
     worse = sum(1 for b in B for c in C if b["seed"] == c["seed"] and b["pass"] and not c["pass"])
     print(f"    missions that passed in B but fail in C: {worse}")
+if Dr:
+    summary("Campaign D: x1 errors, Kalman filter retuned", Dr)
+    pairs = {r["seed"]: r for r in A}
+    ddv = np.array([r["dv"] - pairs[r["seed"]]["dv"] for r in Dr])
+    dlat = np.array([r["lateral"] - pairs[r["seed"]]["lateral"] for r in Dr]) * 100
+    print(f"    vs campaign A (same missions): delta-v change mean {ddv.mean():+.2f} m/s, "
+          f"lateral offset change mean {dlat.mean():+.2f} cm")
 
 # ---- Figure 1: histograms of contact conditions ---------------------------------
 fig, ax = plt.subplots(2, 4, figsize=(15, 7))
