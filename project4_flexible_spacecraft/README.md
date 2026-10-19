@@ -11,7 +11,7 @@ Everything in this project is MATLAB (Control System and Robust Control Toolboxe
 ## Plan
 
 1. **Model**: rigid hub + cantilever bending modes (hybrid model), checked against an independent finite-element model. *(done)*
-2. **Baseline slew with PD control**: rigid-body design, then measure the panel vibration it causes.
+2. **Baseline slew with PD control**: rigid-body design, then measure the panel vibration it causes. *(done)*
 3. **Input shaping**: ZV / ZVD command shaping and its sensitivity to errors in the panel frequency.
 4. **Robust control**: uncertain panel stiffness and damping, an H∞ / μ-synthesis controller, worst-case analysis, comparison with steps 2 and 3.
 5. **Simulink, animation and write-up.**
@@ -54,3 +54,35 @@ $$
 ![model](figures/step1_model.png)
 
 Run: `matlab -batch step1_model` in this folder.
+
+## Step 2 – a slew designed for a rigid spacecraft
+
+PD on the hub angle, designed as if the spacecraft were rigid
+($K_p=J\omega_n^2$, $K_d=2\zeta J\omega_n$, $f_n=0.05$ Hz, $\zeta=0.7$), plus the rigid feedforward
+$u_{ff}=J\ddot\theta_r$. Slew of 90° with |u| ≤ 1 N m (`step2_pd_slew.m`).
+
+| command | slew ends | residual tip vibration | pointing error after slew | settled (0.001° and 1 mm) |
+|---|---|---|---|---|
+| step, PD only (saturates) | 78 s (38° overshoot) | 1.9 mm | – | 107 s |
+| bang-bang + feedforward | 40.3 s | 3.0 mm | 52 arcsec | 65 s |
+| quintic + feedforward | 48.4 s | 0.2 mm | 7 arcsec | 57 s |
+
+A rigid model says the two feedforward slews are finished at 40.3 and 48.4 s. On the
+flexible spacecraft the panels keep ringing for another 9–25 s, because their own
+damping is tiny (ζ = 0.5 %, e-folding time 69 s).
+
+- **Collocated PD is always stable** (actuator and sensor both on the hub; checked for
+  bandwidths 0.001–3 Hz), but it damps the panels only weakly: 3.2 % at the design
+  bandwidth, at most 14 % at 0.3 Hz. With very high gain the hub is pinned and the
+  panel rings at its cantilever frequency with only its structural damping.
+- **Residual vibration of a bang-bang slew** (bottom right). Each torque switch starts a
+  decaying oscillation; adding the three gives
+  $|q| = \frac{F}{\omega^2}\,|1-e^{\lambda T/2}|^2$, nearly zero when $T$ is a whole number of
+  *two* vibration periods (every 4.33 s). The hand formula matches the simulation to
+  0.11 mm (peak 3.3 mm). This is the idea behind input shaping (step 3).
+- **Smooth profiles help**: the quintic (zero acceleration at both ends) leaves ~10× less
+  vibration for the same peak torque, at the cost of 8 s longer slews.
+
+![step 2](figures/step2_pd_slew.png)
+
+Run: `matlab -batch step2_pd_slew` (about 30 s).
