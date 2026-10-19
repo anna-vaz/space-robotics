@@ -4,3 +4,7 @@ __pycache__/
 *.npz
 results_*.json
 *.jsonl
+*.mat
+slprj/
+*.slxc
+*.asv
