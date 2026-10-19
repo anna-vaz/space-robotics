@@ -2,3 +2,5 @@
 __pycache__/
 *.pyc
 *.npz
+results_*.json
+*.jsonl
