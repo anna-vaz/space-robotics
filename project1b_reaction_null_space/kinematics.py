@@ -34,3 +34,21 @@ def positions(q, lengths, b0):
 def system_com(q, lengths, masses, m0, b0):
     p = positions(q, lengths, b0)
     return (m0 * p["r0"] + masses @ p["centres"]) / (m0 + masses.sum())
+
+
+def ik_with_wrist_angle(ee, phi3, lengths, b0):
+    """3-link inverse kinematics, base at the origin with th0 = 0.
+
+    The arm is redundant, so fix the absolute angle phi3 of the last link; the wrist
+    point is then known and the first two links are a standard 2-link problem
+    (elbow branch q2 > 0).  Returns q = [0, 0, 0, q1, q2, q3] or None if unreachable.
+    """
+    L1, L2, L3 = lengths
+    w = np.asarray(ee, float) - L3 * unit(phi3) - np.asarray(b0)
+    c2 = (w @ w - L1**2 - L2**2) / (2 * L1 * L2)
+    if abs(c2) > 0.999:
+        return None
+    q2 = np.arccos(c2)
+    q1 = np.arctan2(w[1], w[0]) - np.arctan2(L2 * np.sin(q2), L1 + L2 * np.cos(q2))
+    q3 = (phi3 - q1 - q2 + np.pi) % (2 * np.pi) - np.pi
+    return np.array([0.0, 0.0, 0.0, q1, q2, q3])

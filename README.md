@@ -11,6 +11,14 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![free-floating robot](project1_free_floating/figures/free_floating.gif)
 
+   **`project1b_reaction_null_space/`** – extension: a third arm link is used to move
+   the end effector **without rotating the base** (Reaction Null Space, as flown on
+   ETS-VII). Exact, damped and minimum-norm control are compared at velocity and torque level,
+   RNS singularities are mapped, and a sweep shows that the starting arm configuration decides
+   whether zero-reaction motion is possible.
+
+   ![reaction null space](project1b_reaction_null_space/figures/reaction_null_space.gif)
+
 2. **`project2_rendezvous/`** – autonomous rendezvous and docking in low Earth orbit.
    Clohessy–Wiltshire relative motion (validated against the nonlinear two-body
    problem), LQR translation control, Euler-parameter attitude control with a
