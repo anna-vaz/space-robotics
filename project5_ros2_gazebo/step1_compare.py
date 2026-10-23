@@ -68,10 +68,21 @@ def urdf_check():
 
 
 # ---------------------------------------------------------------- load Gazebo log
+def fix_stamps(t, dt=1e-3):
+    """Controller messages are stamped with the ROS /clock time, which now and then
+    lags the 1 kHz physics by one tick: a sample is stamped 1 ms late, giving a 2 ms
+    gap followed by a duplicate stamp. Move such samples back into the empty slot."""
+    t = t.copy()
+    for i in range(1, len(t) - 1):
+        if abs(t[i + 1] - t[i]) < 1e-9 and abs(t[i] - t[i - 1] - 2 * dt) < 1e-6:
+            t[i] -= dt
+    return t
+
+
 def load():
     with np.load(os.path.join(RES, f"step1_gazebo{TAG}.npz")) as z:
         g = {key: z[key] for key in z.files}
-    t, keep = np.unique(g["joint_t"], return_index=True)   # drop the few repeated stamps
+    t, keep = np.unique(fix_stamps(g["joint_t"]), return_index=True)
     for key in ("q", "qd", "effort", "cmd"):
         g[key] = g[key][keep]
     # base pose sampled at the joint-state times
