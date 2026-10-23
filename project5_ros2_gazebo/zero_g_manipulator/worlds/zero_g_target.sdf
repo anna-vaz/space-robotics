@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!-- Zero-g world + Project 3's tumbling target: a 50 kg, 1 m square plate with a grasp
+     handle 0.6 m from its centre (along the plate's +x axis). The target is a free body;
+     its spin is started by the test node with one instantaneous torque (ApplyLinkWrench). -->
+<sdf version="1.9">
+  <world name="zero_g">
+    <gravity>0 0 0</gravity>
+    <magnetic_field>0 0 0</magnetic_field>
+    <atmosphere type="adiabatic"/>
+
+    <physics name="1ms" type="dart">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <!-- /world/zero_g/wrench : one-step (instantaneous) wrenches -->
+    <plugin filename="gz-sim-apply-link-wrench-system" name="gz::sim::systems::ApplyLinkWrench"/>
+
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.02 0.02 0.06 1</background>
+      <grid>false</grid>
+    </scene>
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>1 1 0.95 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <direction>-0.5 0.3 -0.9</direction>
+    </light>
+
+    <model name="target">
+      <!-- centre (1.9, 1.4) as in Project 3; handle at 135 deg -> faces the robot (-135 deg)
+           after 30 s at 3 deg/s -->
+      <pose>1.9 1.4 0 0 0 2.356194490192345</pose>
+      <link name="target_link">
+        <inertial>
+          <mass>50.0</mass>
+          <inertia>  <!-- 1 x 1 x 0.3 m box; Izz = m (1 + 1)/12 = 8.333 as in Project 3 -->
+            <ixx>4.541667</ixx><iyy>4.541667</iyy><izz>8.333333</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <visual name="plate">
+          <geometry><box><size>1 1 0.3</size></box></geometry>
+          <material><ambient>0.55 0.55 0.6 1</ambient><diffuse>0.55 0.55 0.6 1</diffuse></material>
+        </visual>
+        <visual name="handle_bar">
+          <pose>0.55 0 0 0 0 0</pose>
+          <geometry><box><size>0.1 0.04 0.04</size></box></geometry>
+          <material><ambient>0.8 0.2 0.2 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material>
+        </visual>
+        <visual name="handle">
+          <pose>0.6 0 0 0 0 0</pose>
+          <geometry><cylinder><radius>0.03</radius><length>0.3</length></cylinder></geometry>
+          <material><ambient>0.8 0.2 0.2 1</ambient><diffuse>0.8 0.2 0.2 1</diffuse></material>
+        </visual>
+      </link>
+      <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+        <odom_frame>world</odom_frame>
+        <robot_base_frame>target_link</robot_base_frame>
+        <dimensions>3</dimensions>
+        <odom_publish_frequency>500</odom_publish_frequency>
+      </plugin>
+    </model>
+  </world>
+</sdf>

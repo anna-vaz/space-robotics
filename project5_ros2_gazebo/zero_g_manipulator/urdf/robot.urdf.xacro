@@ -20,6 +20,7 @@
   <xacro:arg name="q1" default="0.0"/>
   <xacro:arg name="q2" default="0.0"/>
   <xacro:arg name="q3" default="0.0"/>
+  <xacro:arg name="grasp" default="false"/>
   <xacro:property name="n_links" value="$(arg n_links)"/>
 
   <!-- ===== Parameters (same as Project 1) ===== -->
@@ -149,4 +150,21 @@
       <odom_publish_frequency>500</odom_publish_frequency>
     </plugin>
   </gazebo>
+
+  <!-- grasp:=true -> the gripper (tip of the last link) can weld itself to the target.
+       DetachableJoint starts ATTACHED, so the test node detaches it first (everything at
+       rest), then publishes on .../attach at the moment of capture: Gazebo creates a fixed
+       joint at the current relative pose = a rigid-impact capture (cf. Project 3 step 3). -->
+  <xacro:if value="$(arg grasp)">
+    <gazebo>
+      <plugin filename="gz-sim-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
+        <parent_link>link${n_links}</parent_link>
+        <child_model>target</child_model>
+        <child_link>target_link</child_link>
+        <detach_topic>/space_robot/detach</detach_topic>
+        <attach_topic>/space_robot/attach</attach_topic>
+        <output_topic>/space_robot/attach_state</output_topic>
+      </plugin>
+    </gazebo>
+  </xacro:if>
 </robot>

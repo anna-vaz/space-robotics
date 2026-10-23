@@ -29,7 +29,7 @@ def generate_launch_description():
         "xacro ", xacro_file,
         " n_links:=", LaunchConfiguration("n_links"), " cmd:=", LaunchConfiguration("cmd"),
         " q1:=", LaunchConfiguration("q1"), " q2:=", LaunchConfiguration("q2"),
-        " q3:=", LaunchConfiguration("q3")]), value_type=str)
+        " q3:=", LaunchConfiguration("q3"), " grasp:=", LaunchConfiguration("grasp")]), value_type=str)
 
     # 1) Gazebo: '-r' = start running, '-s' = server only (no GUI)
     gazebo_gui = IncludeLaunchDescription(
@@ -56,6 +56,16 @@ def generate_launch_description():
                   arguments=["/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
                              "/model/space_robot/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry"])
 
+    # 4b) grasp scenario (step 4): target odometry, capture status, attach/detach, spin-up wrench
+    grasp_bridge = Node(
+        package="ros_gz_bridge", executable="parameter_bridge", output="screen",
+        condition=IfCondition(LaunchConfiguration("grasp")),
+        arguments=["/model/target/odometry@nav_msgs/msg/Odometry[gz.msgs.Odometry",
+                   "/space_robot/attach_state@std_msgs/msg/String[gz.msgs.StringMsg",
+                   "/space_robot/attach@std_msgs/msg/Empty]gz.msgs.Empty",
+                   "/space_robot/detach@std_msgs/msg/Empty]gz.msgs.Empty",
+                   "/world/zero_g/wrench@ros_gz_interfaces/msg/EntityWrench]gz.msgs.EntityWrench"])
+
     # 5) start the controllers (the spawner waits for the controller manager)
     jsb = Node(package="controller_manager", executable="spawner",
                arguments=["joint_state_broadcaster", "--controller-manager-timeout", "120"])
@@ -71,5 +81,6 @@ def generate_launch_description():
         DeclareLaunchArgument("q1", default_value="0.0"),
         DeclareLaunchArgument("q2", default_value="0.0"),
         DeclareLaunchArgument("q3", default_value="0.0"),
-        gazebo_gui, gazebo_server, rsp, spawn, bridge, jsb, ctrl,
+        DeclareLaunchArgument("grasp", default_value="false"),
+        gazebo_gui, gazebo_server, rsp, spawn, bridge, grasp_bridge, jsb, ctrl,
     ])

@@ -1,6 +1,6 @@
 # Project 5 — Free-floating manipulator in ROS 2 + Gazebo (zero-g)
 
-**Status: in progress (steps 1–3 of 5 done).**
+**Status: in progress (steps 1–4 of 5 done).**
 
 Project 1's planar space robot (100 kg base, two 1 m / 10 kg links) rebuilt as a
 ROS 2 Jazzy package and simulated in Gazebo Harmonic with gravity switched off.
@@ -109,3 +109,49 @@ Where the last millidegrees come from (`step3_compare.py` splits every run):
 bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/run_step3.sh     # 7 runs, ~2.5 min
 ```
 then `.venv\Scripts\python project5_ros2_gazebo\step3_compare.py`.
+
+## Step 4 — reach and capture a tumbling target (Project 3 + Project 1b)
+Project 3's debris — a 50 kg, 1 m plate with a handle 0.6 m from its centre, spinning at
+3°/s — is now a free body in Gazebo (`worlds/zero_g_target.sdf`, its own odometry). The
+`capture_controller` node:
+1. releases the initial weld (`DetachableJoint` starts attached), spins the target up with a
+   single 1-ms torque (`ApplyLinkWrench`; measured spin 3.0000°/s),
+2. **phase A (0–20 s)**: brings the gripper to a point 10 cm in front of the moving handle
+   with the P1b reactionless law (`rns`) or plain generalized-Jacobian control (`minnorm`),
+3. **phase B (20–28 s)**: final approach while the gripper is turned to point into the handle
+   and **spin-synchronised** with the target (`[J*; b+1] q̇ = [v; φ̇]`),
+4. at 28 s welds the gripper to the handle (`DetachableJoint` attach) and locks the joints.
+
+The start pose (0°, 150°, −150°) was chosen offline (`step4_plan.py`, 1728 poses, 11 processes)
+for the smallest total base rotation with margins from both singularities.
+
+| | RNS approach | plain J* approach |
+|---|---|---|
+| base rotation during approach (0–20 s) | **0.135°** max | 16.2° max |
+| base rotation in the spin-synchronised final approach | +6.6° | −13.5° → +9.3° |
+| gripper–handle at capture | 0.07 mm, 0.002° | 0.08 mm, 0.010° |
+| total angular momentum across capture | 0.4363 → 0.4341 N m s (0.5 %) | 0.3 % |
+| composite spin after capture: Gazebo / `L_cm / I_sys` | 0.10963 / 0.10963°/s | 0.11041 / 0.11041°/s |
+
+**Why phase B exists — Gazebo's weld is kinematic.** The first version captured with the
+gripper on the handle but *not* turning with it. Total angular momentum then jumped from
+0.436 to −9.9 N m s at the weld. Gazebo's DART back end implements the attach as
+`moveTo<WeldJoint>`: the target is re-parented under the gripper link and simply **adopts its
+velocity**, the target's own motion is discarded (no impact law). The jump matched exactly:
+the target took the gripper's −4.4°/s instead of +3°/s, giving its centre 0.13 rad/s × 0.6 m
+= 0.078 m/s (measured 0.0784 m/s). A soft capture therefore needs zero relative *twist* —
+which is also what a real gripper needs. With three joints that uses the arm's only spare
+degree of freedom, so the base cannot be held still at the same time: **reactionless
+approach and spin-matched capture compete for the same redundancy**. The remaining base
+rotation is what a 4th joint or a reaction wheel (Project 3 step 4) would have to absorb.
+
+After capture the joints are locked and robot + target spin as one rigid body: 3°/s of
+debris becomes 0.11°/s of the whole stack (Project 3 with the 2-link arm: 0.12°/s).
+
+![step 4](figures/step4_capture.png)
+
+```bash
+bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/run_step4.sh       # rns + minnorm, ~2 min
+```
+then `.venv\Scripts\python project5_ros2_gazebo\step4_plan.py` (start-pose search, ~1 min) and
+`.venv\Scripts\python project5_ros2_gazebo\step4_compare.py`.
