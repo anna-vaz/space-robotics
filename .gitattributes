@@ -1,0 +1,3 @@
+# ROS/WSL files are read by Linux directly from D: -> keep LF line endings
+*.sh text eol=lf
+project5_ros2_gazebo/** text=auto eol=lf
