@@ -2,6 +2,7 @@
 
     ros2 launch zero_g_manipulator sim.launch.py                 # with the Gazebo window
     ros2 launch zero_g_manipulator sim.launch.py headless:=true  # server only (remote runs)
+    ros2 launch zero_g_manipulator sim.launch.py n_links:=3 cmd:=velocity         controller:=velocity_controller q1:=0.5236 q2:=1.0472 q3:=-0.7854   # Project 1b arm
 """
 import os
 
@@ -24,7 +25,11 @@ def generate_launch_description():
     headless = LaunchConfiguration("headless")
     controller = LaunchConfiguration("controller")
 
-    robot_description = ParameterValue(Command(["xacro ", xacro_file]), value_type=str)
+    robot_description = ParameterValue(Command([
+        "xacro ", xacro_file,
+        " n_links:=", LaunchConfiguration("n_links"), " cmd:=", LaunchConfiguration("cmd"),
+        " q1:=", LaunchConfiguration("q1"), " q2:=", LaunchConfiguration("q2"),
+        " q3:=", LaunchConfiguration("q3")]), value_type=str)
 
     # 1) Gazebo: '-r' = start running, '-s' = server only (no GUI)
     gazebo_gui = IncludeLaunchDescription(
@@ -61,5 +66,10 @@ def generate_launch_description():
         DeclareLaunchArgument("headless", default_value="false"),
         DeclareLaunchArgument("world", default_value=os.path.join(pkg, "worlds", "zero_g.sdf")),
         DeclareLaunchArgument("controller", default_value="effort_controller"),
+        DeclareLaunchArgument("n_links", default_value="2"),
+        DeclareLaunchArgument("cmd", default_value="effort"),
+        DeclareLaunchArgument("q1", default_value="0.0"),
+        DeclareLaunchArgument("q2", default_value="0.0"),
+        DeclareLaunchArgument("q3", default_value="0.0"),
         gazebo_gui, gazebo_server, rsp, spawn, bridge, jsb, ctrl,
     ])

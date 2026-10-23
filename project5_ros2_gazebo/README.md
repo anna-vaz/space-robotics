@@ -1,6 +1,6 @@
 # Project 5 — Free-floating manipulator in ROS 2 + Gazebo (zero-g)
 
-**Status: in progress (steps 1–2 of 5 done).**
+**Status: in progress (steps 1–3 of 5 done).**
 
 Project 1's planar space robot (100 kg base, two 1 m / 10 kg links) rebuilt as a
 ROS 2 Jazzy package and simulated in Gazebo Harmonic with gravity switched off.
@@ -64,3 +64,48 @@ stamp); the effect on the motion is negligible.
 bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/run_step2.sh
 ```
 then `.venv\Scripts\python project5_ros2_gazebo\step2_compare.py`.
+
+## Step 3 — Reaction Null Space controller as a ROS 2 node (3-link arm)
+The Project 1b robot (third link 0.5 m / 5 kg, `n_links:=3`) with **joint velocity servos**
+(`cmd:=velocity`), the way reactionless control was flown on ETS-VII. A ROS 2 node
+(`rns_controller`) reads `/joint_states` and sends `qd = P(q) qd_des` with
+`P = I − bᵀb/(b bᵀ)`, where `b(q)` (base angular rate per joint rate) comes from a small
+NumPy model inside the node (`free_floating_model.py`; matches P1b's SymPy model to 2e-15).
+`b` does not depend on the base pose, so the node needs **no base sensor**.
+
+P1b step-2 case: start (30°, 60°, −45°), `qd_des = (0.2, −0.3, 0.4)` rad/s for 4 s.
+
+| run | base rotation |
+|---|---|
+| commanded rates, Gazebo / P1b | −14.446° / −14.440° |
+| RNS node 1 kHz, Gazebo / P1b | −0.0055° / 0 |
+| RNS 1 kHz with 0.2 s velocity ramp | **+0.0007°** (20 000× smaller than commanded) |
+
+Where the last millidegrees come from (`step3_compare.py` splits every run):
+
+| run [mdeg] | Gazebo | = node sample-and-hold | + servo transient | + Gazebo integrator |
+|---|---|---|---|---|
+| 1 kHz, step start | −5.45 | +1.71 | −6.21 | −0.95 |
+| 100 Hz, step start | −0.34 | +6.83 | −6.22 | −0.95 |
+| 20 Hz, step start | +22.46 | +29.65 | −6.24 | −0.95 |
+| 1 kHz, 0.2 s ramp | +0.74 | +1.64 | +0.005 | −0.91 |
+| 100 Hz, 0.2 s ramp | +5.67 | +6.57 | +0.008 | −0.91 |
+| 20 Hz, 0.2 s ramp | +26.40 | +28.55 | −1.24 | −0.91 |
+
+- **Sample-and-hold**: `P(q)` is frozen between controller updates while `q` keeps moving;
+  the leak grows linearly with the hold time (≈0.57 mdeg per ms here). Computed offline by
+  running the node's exact logic on exact kinematics.
+- **Servo transient**: a velocity *step* needs more torque than the 200 N m joint limit, so
+  the servos take 4–8 ms to reach the command; during that time the joint rates are not in
+  the null space and the base gets a kick. A smooth ramp removes it — RNS is a velocity-level
+  property, so anything the motors cannot follow leaks into the base.
+- **Integrator**: Gazebo's base angle vs `Σ b(q)·Δq` along its own joint path; halves with a
+  0.5 ms physics step (first-order integration error, 2e-5 of the commanded rotation).
+- The 100 Hz step-start run only *looks* best: its hold leak and servo kick cancel.
+
+![step 3](figures/step3_rns_gazebo.png)
+
+```bash
+bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/run_step3.sh     # 7 runs, ~2.5 min
+```
+then `.venv\Scripts\python project5_ros2_gazebo\step3_compare.py`.

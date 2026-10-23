@@ -26,6 +26,7 @@ setup(
         "console_scripts": [
             "step1_torque_pulse = zero_g_manipulator.step1_torque_pulse:main",
             "step2_quintic_move = zero_g_manipulator.step2_quintic_move:main",
+            "rns_controller = zero_g_manipulator.rns_controller:main",
         ],
     },
 )
