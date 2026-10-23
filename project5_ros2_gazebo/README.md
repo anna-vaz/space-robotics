@@ -1,17 +1,41 @@
-# Project 5 — Free-floating manipulator in ROS 2 + Gazebo (zero-g)
+# Project 5 — Free-floating space manipulator in ROS 2 + Gazebo (zero-g)
 
-**Status: in progress (steps 1–4 of 5 done).**
+The robots of Projects 1 and 1b rebuilt as a **ROS 2 Jazzy** package and flown in
+**Gazebo Harmonic** with gravity switched off: a 100 kg satellite carrying a 2- or 3-link arm,
+`ros2_control` joint controllers, no actuation on the base. Every Gazebo result is checked
+against the independent Python models of the earlier projects. The final demo captures
+Project 3's tumbling debris with the reactionless arm of Project 1b.
 
-Project 1's planar space robot (100 kg base, two 1 m / 10 kg links) rebuilt as a
-ROS 2 Jazzy package and simulated in Gazebo Harmonic with gravity switched off.
-The arm is torque-controlled through `ros2_control`; the base has no actuators and
-is free to react. Every Gazebo result is checked against the independent Python
-models from Projects 1 / 1b.
+![zero-g capture](figures/zero_g_capture.gif)
 
-## Layout
-- `zero_g_manipulator/` — the ROS 2 package (URDF/xacro, zero-g world, controllers, launch, test nodes)
-- `scripts/` — `setup_workspace.sh` (one-time build in `~/ros2_ws`), `run_stepN.sh` (headless runs)
-- `stepN_*.py` — Windows-side analysis against the Python models; `figures/`
+Real Gazebo renders of the capture run (top view, `scripts/gz_screenshots.sh`):
+
+![gazebo](figures/gazebo_screenshots.png)
+
+## Results at a glance
+
+| step | what | key number |
+|---|---|---|
+| 1 | P1 robot in zero-g Gazebo, open-loop torques replayed in the P1 Lagrange model | base angle 0.022° max error after a 55° rotation |
+| 2 | stock `joint_trajectory_controller` (PD, P1 gains) vs P1 step 3 | base −30.655° vs −30.656°, joints within 0.002° |
+| 3 | Reaction Null Space node on the 3-link arm (velocity servos) | base 14.4° → **0.0007°**; residual split into sample-and-hold, servo saturation, integrator |
+| 4 | reach + capture of a 3°/s tumbling target | base 0.135° (RNS) vs 16.2° (plain J*) during approach; momentum conserved through capture (0.5 %); composite spin = `L/I` to 5 digits |
+
+## What is in the package
+- **`zero_g_manipulator/`** (ament_python, built in `~/ros2_ws` through a symlink)
+  - `urdf/robot.urdf.xacro` — base + 2 or 3 links (`n_links`), effort or velocity joints
+    (`cmd`), initial pose (`q1..q3`), optional capture weld (`grasp`)
+  - `worlds/zero_g.sdf`, `worlds/zero_g_target.sdf` — gravity 0, DART at 1 kHz; the second
+    adds Project 3's target (free body, odometry, one-step spin-up torque) and a top-down GUI camera
+  - `config/controllers_{2,3}link.yaml` — joint state broadcaster, effort / velocity group
+    controllers, `joint_trajectory_controller` with P1's PD gains
+  - `launch/sim.launch.py` — Gazebo (GUI or `headless:=true`), spawn, ROS↔Gazebo bridges, controllers
+  - nodes: `step1_torque_pulse`, `step2_quintic_move`, `rns_controller`, `capture_controller`
+  - `free_floating_model.py` — NumPy model used *inside* the nodes (M, b, P, J*, momentum;
+    equals P1b's SymPy model to 1e-13); `reach.py` — the reach/capture law
+- **`scripts/`** — `setup_workspace.sh`, `run_step{1..4}.sh` (headless), `gz_screenshots.sh`
+- **`step{1..4}_compare.py`, `step4_plan.py`, `step5_animate.py`** — Windows-side analysis,
+  each comparing the Gazebo logs with the Python models of Projects 1, 1b and 3
 
 ## Step 1 — the robot in zero-g Gazebo, checked against Project 1
 Open-loop test: 2 s with no torque (rest check), then one sine period of joint
@@ -155,3 +179,39 @@ bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/run_step4.sh   
 ```
 then `.venv\Scripts\python project5_ros2_gazebo\step4_plan.py` (start-pose search, ~1 min) and
 `.venv\Scripts\python project5_ros2_gazebo\step4_compare.py`.
+
+## Step 5 — animation and Gazebo renders
+`step5_animate.py` plays back the two Gazebo capture runs (RNS vs plain J*) side by side with the
+base-attitude trace; `scripts/gz_screenshots.sh` repeats the RNS run with the Gazebo window (WSLg)
+and saves renders through the GUI screenshot service (top-down camera set in the world's `<gui>` block).
+
+## How to run
+Ubuntu 24.04 (WSL 2) with ROS 2 Jazzy:
+```bash
+sudo apt install ros-jazzy-ros-gz ros-jazzy-gz-ros2-control ros-jazzy-ros2-control \
+                 ros-jazzy-ros2-controllers ros-jazzy-xacro
+bash /mnt/d/Projects/space-robotics/project5_ros2_gazebo/scripts/setup_workspace.sh   # once
+bash .../scripts/run_step4.sh                                                          # any step, headless
+ros2 launch zero_g_manipulator sim.launch.py n_links:=3 cmd:=velocity grasp:=true \
+    controller:=velocity_controller world:=$(ros2 pkg prefix --share zero_g_manipulator)/worlds/zero_g_target.sdf \
+    q1:=0.0 q2:=2.618 q3:=-2.618                                                       # watch it in the GUI
+ros2 run zero_g_manipulator capture_controller --ros-args -p use_sim_time:=true -p mode:=rns
+```
+Analysis (Windows, repo root): `.venv\Scripts\python project5_ros2_gazebo\stepN_compare.py`.
+
+## Lessons learned
+- **Check the simulator against an independent model before trusting it.** Gazebo reproduced
+  the Lagrange models to 1e-4 relative; the remaining differences were traced to first-order
+  integration (halves with the step), not to wrong physics.
+- **Timestamps lie occasionally.** gz_ros2_control runs ~0.2 % of controller cycles 1 ms ahead
+  of the physics; comparisons need the right time base.
+- **RNS is a velocity-level property.** Anything the motors cannot follow (a velocity step
+  beyond the torque limit) or anything the controller holds too long (sample-and-hold) leaks
+  into the base — a smooth ramp and a fast loop bring the leak to millidegrees.
+- **Gazebo's weld is kinematic.** `DetachableJoint` (DART `moveTo<WeldJoint>`) makes the target
+  adopt the gripper's velocity; momentum is only conserved if the relative twist is ~0 — the same
+  soft-capture condition a real gripper needs.
+- **Redundancy is a budget.** A 3-joint planar arm has one spare DOF: it can hold the base
+  still *or* match the target's spin at capture, not both. A 4th joint or a reaction wheel
+  (Project 3 step 4) would pay for the rest — relevant for planning capture and assembly
+  missions where the base attitude must stay within limits.

@@ -42,6 +42,13 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![flexible slew](project4_flexible_spacecraft/figures/flexible_slew.gif)
 
+5. **`project5_ros2_gazebo/`** (ROS 2 Jazzy + Gazebo Harmonic) – the free-floating robots of
+   projects 1/1b in a zero-g Gazebo world with `ros2_control`, validated against the Python
+   models; a Reaction Null Space controller node; and reach + capture of project 3's tumbling
+   target with the reactionless arm, including momentum checks through the capture.
+
+   ![zero-g capture](project5_ros2_gazebo/figures/zero_g_capture.gif)
+
 ## Setup
 
 ```bash
