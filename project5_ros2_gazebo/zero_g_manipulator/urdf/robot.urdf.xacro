@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!--
+  Free-floating space robot = Project 1's robot, now as a URDF for Gazebo.
+
+  * base_link : satellite body, 1 m x 1 m square (0.3 m thick), 100 kg
+  * link1/2   : 1 m, 10 kg arm links (slender-rod inertia m l^2 / 12, as in P1)
+  * joint1/2  : revolute joints about z -> all motion stays in the x-y plane
+
+  The base has NO joint to the world, so Gazebo treats it as a free body.
+  Numbers are kept identical to project1_free_floating/params.py.
+-->
+<robot name="space_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===== Parameters (same as Project 1) ===== -->
+  <xacro:property name="m0" value="100.0"/>   <!-- base mass [kg] -->
+  <xacro:property name="a0" value="1.0"/>     <!-- base side [m] -->
+  <xacro:property name="h0" value="0.3"/>     <!-- base thickness (out of plane, visual only matters) -->
+  <xacro:property name="l1" value="1.0"/>
+  <xacro:property name="l2" value="1.0"/>
+  <xacro:property name="m1" value="10.0"/>
+  <xacro:property name="m2" value="10.0"/>
+  <xacro:property name="r_link" value="0.04"/> <!-- link radius (visual) -->
+
+  <material name="gold"><color rgba="0.85 0.65 0.2 1"/></material>
+  <material name="grey"><color rgba="0.6 0.6 0.65 1"/></material>
+  <material name="blue"><color rgba="0.2 0.4 0.8 1"/></material>
+  <material name="red"><color rgba="0.8 0.2 0.2 1"/></material>
+
+  <!-- ===== Base (satellite) ===== -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="${m0}"/>
+      <!-- solid box: Izz = m (a^2 + a^2)/12 = 16.667 kg m^2, same as P1's I0 -->
+      <inertia ixx="${m0*(a0*a0 + h0*h0)/12}" iyy="${m0*(a0*a0 + h0*h0)/12}"
+               izz="${m0*(a0*a0 + a0*a0)/12}" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+    <visual>
+      <geometry><box size="${a0} ${a0} ${h0}"/></geometry>
+      <material name="gold"/>
+    </visual>
+  </link>
+
+  <!-- ===== Arm link macro: frame at the joint, link points along +x ===== -->
+  <xacro:macro name="arm_link" params="name length mass color">
+    <link name="${name}">
+      <inertial>
+        <origin xyz="${length/2} 0 0"/>
+        <mass value="${mass}"/>
+        <!-- slender rod about its centre (P1: I = m l^2 / 12); tiny value about its own axis -->
+        <inertia ixx="${mass*r_link*r_link/2}" iyy="${mass*length*length/12}"
+                 izz="${mass*length*length/12}" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+      <visual>
+        <origin xyz="${length/2} 0 0" rpy="0 ${pi/2} 0"/>
+        <geometry><cylinder radius="${r_link}" length="${length}"/></geometry>
+        <material name="${color}"/>
+      </visual>
+      <visual>  <!-- joint marker -->
+        <geometry><cylinder radius="${1.8*r_link}" length="${3*r_link}"/></geometry>
+        <material name="grey"/>
+      </visual>
+    </link>
+  </xacro:macro>
+
+  <xacro:arm_link name="link1" length="${l1}" mass="${m1}" color="blue"/>
+  <xacro:arm_link name="link2" length="${l2}" mass="${m2}" color="blue"/>
+
+  <!-- ===== Joints ===== -->
+  <!-- shoulder: middle of the base's right face, b0 = (a0/2, 0) -->
+  <joint name="joint1" type="continuous">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="${a0/2} 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="200" velocity="10"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <!-- elbow: at the tip of link 1 -->
+  <joint name="joint2" type="continuous">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="${l1} 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="200" velocity="10"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <!-- ===== ros2_control: both joints are torque (effort) controlled ===== -->
+  <ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    <xacro:macro name="effort_joint" params="name">
+      <joint name="${name}">
+        <command_interface name="effort">
+          <param name="min">-200</param>
+          <param name="max">200</param>
+        </command_interface>
+        <state_interface name="position">
+          <param name="initial_value">0.0</param>
+        </state_interface>
+        <state_interface name="velocity"/>
+        <state_interface name="effort"/>
+      </joint>
+    </xacro:macro>
+    <xacro:effort_joint name="joint1"/>
+    <xacro:effort_joint name="joint2"/>
+  </ros2_control>
+
+  <gazebo>
+    <!-- runs the ros2_control controller manager inside the Gazebo physics loop -->
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find zero_g_manipulator)/config/controllers.yaml</parameters>
+    </plugin>
+    <!-- publishes the base pose + velocity (the base is NOT actuated, we only watch it) -->
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>world</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <dimensions>3</dimensions>
+      <odom_publish_frequency>500</odom_publish_frequency>
+    </plugin>
+  </gazebo>
+</robot>

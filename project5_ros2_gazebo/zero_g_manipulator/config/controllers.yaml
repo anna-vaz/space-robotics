@@ -1,0 +1,16 @@
+# ros2_control controllers, run by the controller manager INSIDE Gazebo's
+# physics loop (gz_ros2_control), so they are synchronous with the 1 kHz physics.
+controller_manager:
+  ros__parameters:
+    update_rate: 1000  # Hz
+    use_sim_time: true
+
+    joint_state_broadcaster:        # publishes /joint_states
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    effort_controller:              # raw torques from /effort_controller/commands
+      type: effort_controllers/JointGroupEffortController
+
+effort_controller:
+  ros__parameters:
+    joints: [joint1, joint2]
