@@ -146,6 +146,14 @@ Project 3's debris — a 50 kg, 1 m plate with a handle 0.6 m from its centre, s
    and **spin-synchronised** with the target (`[J*; b+1] q̇ = [v; φ̇]`),
 4. at 28 s welds the gripper to the handle (`DetachableJoint` attach) and locks the joints.
 
+**How the reactionless approach works.** The gripper task is 2-D (x, y) but the arm has three
+joints, so one direction `n` of joint motion (the null space of `J*`) leaves the gripper path
+unchanged. Every joint motion turns the free base by `b(q)·q̇` (momentum conservation), so the
+node adds just enough of `n` to cancel it: `q̇ = J*⁺v + s n` with `s` chosen so that `b·q̇ = 0`.
+Links 1 and 2 fold into a "V" and link 3 is the short wrist:
+
+![the 3-link arm](figures/explain_arm.png)
+
 The start pose (0°, 150°, −150°) was chosen offline (`step4_plan.py`, 1728 poses, 11 processes)
 for the smallest total base rotation with margins from both singularities.
 

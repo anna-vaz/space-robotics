@@ -24,6 +24,7 @@ data = {m: load(m) for m, _, _ in RUNS}
 T_END = min(d["j_t"][-1] for d in data.values()) - 0.1
 times = np.arange(0.0, T_END, 0.4)
 SQ = np.array([[0.5, 0.5], [-0.5, 0.5], [-0.5, -0.5], [0.5, -0.5]])
+LINK_COLS = ["C0", "C2", "C3"]          # same colours as figures/explain_arm.png
 
 
 def rot(a):
@@ -45,11 +46,16 @@ for k, (m, title, col) in enumerate(RUNS):
     ax.add_patch(base)
     ax.add_patch(tgt)
     heading, = ax.plot([], [], "k-", lw=2)
-    arm, = ax.plot([], [], "-o", color=col, lw=4, ms=5)
+    links = [ax.plot([], [], "-", color=lc, lw=5, solid_capstyle="round", label=lab)[0]
+             for lc, lab in zip(LINK_COLS, ("link 1 (1.0 m)", "link 2 (1.0 m)", "link 3 (0.5 m)"))]
+    joints_dots, = ax.plot([], [], "ko", ms=4)
+    if k == 0:
+        ax.legend(loc="lower right", fontsize=8)
     handle, = ax.plot([], [], "s", color="C3", ms=8)
-    trail, = ax.plot([], [], ":", color=col, lw=1)
+    trail, = ax.plot([], [], ":", color="k", lw=1)
     txt = ax.text(0.02, 0.97, "", transform=ax.transAxes, va="top", fontsize=10, family="monospace")
-    art[m] = dict(base=base, tgt=tgt, heading=heading, arm=arm, handle=handle, trail=trail, txt=txt, ee=[])
+    art[m] = dict(base=base, tgt=tgt, heading=heading, links=links, dots=joints_dots, handle=handle,
+                  trail=trail, txt=txt, ee=[])
 
 axb = fig.add_subplot(gs[1, :])
 for m, title, col in RUNS:
@@ -84,13 +90,15 @@ def update(i):
         a["base"].set_xy(r0 + SQ @ rot(q[2]).T)
         a["heading"].set_data(*np.array([r0, r0 + 0.45 * np.array([np.cos(q[2]), np.sin(q[2])])]).T)
         pts = np.array(joints + [ee])
-        a["arm"].set_data(pts[:, 0], pts[:, 1])
+        for i, ln in enumerate(a["links"]):
+            ln.set_data(pts[i:i + 2, 0], pts[i:i + 2, 1])
+        a["dots"].set_data(pts[:3, 0], pts[:3, 1])
         a["tgt"].set_xy(c + (A_T * SQ) @ rot(th).T)
         a["handle"].set_data([c[0] + R.HANDLE_R * np.cos(th)], [c[1] + R.HANDLE_R * np.sin(th)])
         a["ee"].append(ee)
         a["trail"].set_data(*np.array(a["ee"]).T)
         a["txt"].set_text(f"t = {t:5.1f} s   {phase(t, d['t_capture'])}\nbase angle {D(q[2]):+6.2f} deg")
-        out += [a["base"], a["heading"], a["arm"], a["tgt"], a["handle"], a["trail"], a["txt"]]
+        out += [a["base"], a["heading"], *a["links"], a["dots"], a["tgt"], a["handle"], a["trail"], a["txt"]]
     return out
 
 
