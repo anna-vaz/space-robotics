@@ -48,3 +48,25 @@ Start: 10 deg/s on every axis. Detumbled = |omega| stays below 0.5 deg/s.
 
 ![detumble](figures/step2_detumble.png)
 ![gain sweep](figures/step2_gain_sweep.png)
+
+## Step 3 — sensors and attitude determination (TRIAD, MEKF)
+
+`sensors.py`, `estimation.py`, `python step3_estimation.py` (~6 min on 12 cores).
+Truth: the detumbled CubeSat (0.3–0.6 deg/s, disturbances on) for 3 orbits.
+Sensors: gyro at 10 Hz (ARW 0.3 deg/sqrt(h), turn-on bias up to 0.3 deg/s); magnetometer (100 nT) and 6 coarse sun sensors (1 %) at 1 Hz.
+The onboard field model is IGRF truncated at degree 8 (42.6 nT rms error vs the degree-13 truth).
+
+- **TRIAD** (magnetometer as the primary vector): 1.1 deg rms, only in sunlight (37 % of the orbit is eclipse).
+- **MEKF** (multiplicative EKF, error state = 3 small angles + 3 gyro-bias errors):
+  - attitude error 0.16 deg rms in sunlight, 0.21 deg in eclipse (magnetometer + gyro only)
+  - gyro bias learned to 5e-4 deg/s within minutes
+  - 99.9 % of the errors inside +-3 sigma
+- **Consistency (36-run Monte Carlo, average NEES of the 6 error states; ideal value 6):** feeding the field-model
+  error to the filter as white noise gives ANEES = 16.6, i.e. the filter is over-confident. The model error is correlated
+  over minutes (degree 9–13 terms have wavelengths of ~3000 km, about 400 s of flight), so a white-noise R must be inflated by
+  roughly the square root of the number of correlated samples. With the model-error term inflated 10x and the
+  CSS noise at 0.03 rad, ANEES is 6.8 (eclipse 6.0, sunlit 7.3) at the same 0.2 deg accuracy. The small remaining excess
+  in sunlight comes from correlated errors that a white-noise R cannot fully represent (fix: full-degree onboard model, or
+  consider-states).
+
+![estimation](figures/step3_estimation.png)
