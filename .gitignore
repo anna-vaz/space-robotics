@@ -10,3 +10,4 @@ slprj/
 *.asv
 step5_final_frame.png
 project5_ros2_gazebo/results/
+project6_cubesat_adcs/step*_output.txt
