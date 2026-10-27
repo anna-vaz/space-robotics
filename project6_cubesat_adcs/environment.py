@@ -153,11 +153,11 @@ class OrbitEnvironment:
         self.field_date = mid
 
     def at(self, t):
-        """Environment at time t (scalar): r, v, B [T], sun vector [m], shadow flag."""
+        """Environment at time t (scalar): r, v, B [T], dB/dt in ECI [T/s], sun vector [m], shadow flag."""
         rv = self.sol.sol(t)
         sun = self._sun(t)
         r = rv[:3]
-        return dict(r=r, v=rv[3:], B=self._B(t), sun=sun,
+        return dict(r=r, v=rv[3:], B=self._B(t), Bdot=self._B(t, 1), sun=sun,
                     shadow=bool(in_shadow(r, sun / np.linalg.norm(sun))))
 
 
