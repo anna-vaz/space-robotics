@@ -10,6 +10,11 @@ magnetic momentum unloading, Monte Carlo pointing budget. Python (NumPy/SciPy, I
 | `orbit.py` | two-body + J2 propagation, SSO design (i = 97.40 deg, LTAN 10:30) |
 | `environment.py` | IGRF-14 / tilted-dipole field, Sun + shadow, density, disturbance torques, pre-computed `OrbitEnvironment` |
 | `attitude.py` | Euler parameters, DCMs, rigid-body equations (Schaub & Junkins conventions) |
+| `bdot.py` | B-dot detumbling law, continuous and 1 Hz flight-software simulators |
+| `sensors.py` | magnetometer, coarse sun sensors, MEMS gyro (Farrenkopf model) |
+| `estimation.py` | TRIAD and multiplicative EKF with gyro-bias estimation |
+| `controller.py` | nadir / ground-target reference, rate-limited PD wheel law, cross-product unloading |
+| `closed_loop.py` | full loop: truth (RK4) -> sensors -> MEKF -> control -> wheels + coils, 1 Hz cycle |
 
 ## Step 1 — orbit, environment and disturbance torques
 
@@ -98,3 +103,49 @@ Magnetometer readings are taken while the coils are off; the coils are on for 0.
 ![budget](figures/step4_budget.png)
 ![nadir](figures/step4_nadir.png)
 ![pass](figures/step4_pass.png)
+
+## Step 5 — Monte Carlo pointing budget and animation
+
+`python step5_montecarlo.py 48` (~13 min on 12 cores, streams to `results_step5_mc.jsonl`), then `python step5_analysis.py`.
+Each run disperses the truth while the flight software keeps the nominal model:
+- inertia ±10 %, products of inertia ±0.5e-3 kg m^2
+- CoM offset 1 cm per axis (1 sigma), residual dipole 0–20 mA m^2 in a random direction
+- gyro bias 0.3 deg/s (1 sigma)
+- random initial attitude, rate up to 0.5 deg/s, start time anywhere in the first day
+
+Each run then flies one orbit of nadir pointing with the full loop.
+
+- **Acquisition** (error below 1 deg for 5 min): median 178 s, worst 942 s.
+- **Tracking error, pooled over 48 runs (69 h of flight):**
+
+  | percentile | pointing | knowledge |
+  |---|---|---|
+  | 50 % | 0.23 deg | 0.19 deg |
+  | 95 % | 0.52 deg | 0.46 deg |
+  | 99 % | 0.70 deg | 0.64 deg |
+  | 99.73 % | 0.89 deg | 0.81 deg |
+
+  The pointing error is 0.26 deg rms in sunlight and 0.35 deg in eclipse. It is above 1 deg for 0.2 % of the time,
+  in 3 of 48 runs, all in eclipse with a large residual dipole; the worst instantaneous error is 1.5 deg.
+- **What drives it:** per-run pointing error correlates +0.83 with knowledge error and +0.37 with the residual dipole.
+  The PD law has no integral action, so a constant dipole torque leaves a steady offset. The next improvements would be
+  in-flight dipole calibration (or an integral term) and a better onboard field model (step 3).
+- **Margins:** wheel momentum at most 1.03 of 1.5 mN m s (during acquisition); wheel torque at most 0.19 of 0.5 mN m;
+  unloading dipole at most 0.014 of 0.2 A m^2. The momentum check holds to 7e-16 N m s in every run.
+
+![monte carlo](figures/step5_montecarlo.png)
+
+`python step5_animate.py` (after step 4): the Athens pass. Left: the CubeSat in the orbit frame (red = camera face).
+Right: where the boresight hits the ground, with a ±10 km zoom on Athens.
+
+![Athens pass](figures/athens_pass.gif)
+
+## Summary
+
+| | result |
+|---|---|
+| detumbling 10 deg/s per axis | 1.9 orbits (flight B-dot, 1 Hz, 80 % duty) |
+| attitude knowledge (MEKF, mag + CSS + MEMS gyro) | 0.2–0.3 deg rms, consistent after R tuning (ANEES 6.8) |
+| pointing, 99.73 % (48-run Monte Carlo) | 0.89 deg, knowledge-limited |
+| ground-target tracking (Athens, 31 deg pass) | 0.18 deg rms boresight error, ~3 km on the ground |
+| momentum management | unloading keeps the wheels below 0.2 mN m s per day of nadir pointing |

@@ -49,6 +49,14 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![zero-g capture](project5_ros2_gazebo/figures/zero_g_capture.gif)
 
+6. **`project6_cubesat_adcs/`** – complete attitude determination and control for a 3U CubeSat in a
+   500 km sun-synchronous orbit: IGRF-14 field, Sun/eclipse and disturbance torques; B-dot
+   detumbling with 1 Hz flight software; TRIAD and a multiplicative EKF checked for consistency
+   (NEES); reaction-wheel pointing with magnetic momentum unloading in a full closed loop;
+   tracking of a ground target (Athens); 48-run Monte Carlo pointing budget.
+
+   ![Athens pass](project6_cubesat_adcs/figures/athens_pass.gif)
+
 ## Setup
 
 ```bash
