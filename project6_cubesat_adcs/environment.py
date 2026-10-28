@@ -171,35 +171,38 @@ def magnetic_torque(m_B, B_B):
     return np.cross(m_B, B_B)
 
 
-def drag_torque(v_rel_B, rho):
+def drag_torque(v_rel_B, rho, centres=None):
     """Flat-plate free-molecular drag on every face that sees the flow."""
+    centres = pr.FACE_CENTRES if centres is None else centres
     V = np.linalg.norm(v_rel_B)
     vh = v_rel_B / V
     cosang = pr.FACE_NORMALS @ vh
     lit = cosang > 0
     F = -0.5 * rho * pr.CD * V**2 * (pr.FACE_AREAS[lit] * cosang[lit])[:, None] * vh
-    return np.sum(np.cross(pr.FACE_CENTRES[lit], F), axis=0)
+    return np.sum(np.cross(centres[lit], F), axis=0)
 
 
-def srp_torque(s_B, dist, shadow):
+def srp_torque(s_B, dist, shadow, centres=None):
     """Solar pressure on every sunlit face; s_B = unit vector to the Sun."""
+    centres = pr.FACE_CENTRES if centres is None else centres
     if shadow:
         return np.zeros(3)
     P = P_SUN * (AU / dist)**2
     cosang = pr.FACE_NORMALS @ s_B
     lit = cosang > 0
     F = -P * pr.CR * (pr.FACE_AREAS[lit] * cosang[lit])[:, None] * s_B
-    return np.sum(np.cross(pr.FACE_CENTRES[lit], F), axis=0)
+    return np.sum(np.cross(centres[lit], F), axis=0)
 
 
-def disturbance_torques(BN, env, m_res=pr.M_RESIDUAL):
-    """All four disturbance torques [N m] in body axes for attitude [BN]."""
+def disturbance_torques(BN, env, m_res=pr.M_RESIDUAL, J=pr.J, centres=None):
+    """All four disturbance torques [N m] in body axes for attitude [BN].
+    m_res, J, centres (face centres seen from the CoM) can be overridden (Monte Carlo truth)."""
     r, v = env["r"], env["v"]
     v_rel = v - np.cross([0, 0, ob.OMEGA_E], r)        # co-rotating atmosphere
     rho = density(np.linalg.norm(r) - ob.RE)
     s = env["sun"]
     d = np.linalg.norm(s)
-    return dict(gg=gravity_gradient_torque(BN @ r),
+    return dict(gg=gravity_gradient_torque(BN @ r, J),
                 mag=magnetic_torque(m_res, BN @ env["B"]),
-                drag=drag_torque(BN @ v_rel, rho),
-                srp=srp_torque(BN @ (s / d), d, env["shadow"]))
+                drag=drag_torque(BN @ v_rel, rho, centres),
+                srp=srp_torque(BN @ (s / d), d, env["shadow"], centres))

@@ -70,3 +70,31 @@ The onboard field model is IGRF truncated at degree 8 (42.6 nT rms error vs the 
   consider-states).
 
 ![estimation](figures/step3_estimation.png)
+
+## Step 4 — reaction-wheel pointing and magnetic momentum unloading (full loop)
+
+`controller.py`, `closed_loop.py`, `python step4_pointing.py` (~5 min on 12 cores).
+Full loop at 1 Hz: truth (RK4, 0.1 s) -> gyro / magnetometer / sun sensors -> MEKF -> guidance -> wheels + coils.
+Magnetometer readings are taken while the coils are off; the coils are on for 0.8 s of each 1 s cycle.
+
+- **Attitude law:** rate-limited PD with feedforward. w_des = w_r + sat(-k 2 eps, 1 deg/s), and
+  u = J(w_r' - w x w_r) + w x (J w + h_w) - P (w - w_des) - tau_mtq.
+  Bandwidth 0.1 rad/s, zeta 0.9. The 1 deg/s slew limit keeps J w < 1.5 mN m s, the wheel capacity.
+- **Unloading:** m = (k/|B|^2)(h_w x B), so tau = -k (I - b b^T) h_w.
+- **Momentum budget** (perfect nadir tracking, 1 day): without unloading |h_w| grows to 1.7 mN m s,
+  mostly from drag on the CoM offset and gravity gradient on the products of inertia.
+  With unloading it stays below 0.2 mN m s.
+- **Nadir pointing from the detumbled state** (3 orbits): acquired in 165 s.
+  - Pointing error with perfect knowledge (control error only): 0.023 deg rms.
+  - With the MEKF in the loop: 0.30 deg rms, 0.84 deg at the 99th percentile. Knowledge error is 0.28 deg, so
+    attitude knowledge, not control, limits the pointing.
+  - Wheel momentum at the end: 0.09 mN m s with unloading vs 0.50 mN m s without.
+  - Inertial momentum check (wheels are internal): 1e-16 N m s.
+- **Athens target pass** (daylight, max elevation 31 deg): the slew starts at elevation -10 deg and is 66 deg long;
+  the boresight is within 1 deg 89 s later.
+  - For elevation > 10 deg the boresight error is 0.18 deg rms (0.03 deg with perfect knowledge).
+  - Peak body rate 0.97 deg/s; wheel momentum stays below 0.82 mN m s.
+
+![budget](figures/step4_budget.png)
+![nadir](figures/step4_nadir.png)
+![pass](figures/step4_pass.png)
