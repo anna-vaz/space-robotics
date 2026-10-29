@@ -1,0 +1,65 @@
+== 0. solver checks
+  square plate, free:            lambda1 = 13.468   (Leissa 13.468)
+  square plate, corner supports: lambda1 = 7.111   (Leissa 7.12)
+  step-0 bar, Timoshenko beam:   405.1 / 2426 Hz   (SOLIDWORKS 2 mm mesh: 407.3 / 2441 Hz)
+  GEVS qual / acceptance:        14.14 / 10.00 grms   (GEVS 14.1 / 10.0)
+
+== 1. mass budget
+  rails (4x 7075 angle)                         89.0 g   z =     +0 mm
+  side walls (4x 1 mm 6061)                    305.2 g   z =     +0 mm
+  end plates (2x 2 mm 6061)                    108.0 g   z =     +0 mm
+  solar panels (4x body-mounted)               480.0 g   z =     +0 mm
+  reaction wheels + bracket                    450.0 g   z =   -120 mm
+  magnetorquers (2 rods + coil)                100.0 g   z =    -80 mm
+  battery board                                250.0 g   z =    -65 mm
+  EPS board                                     90.0 g   z =    -45 mm
+  OBC board                                     70.0 g   z =    -20 mm
+  ADCS sensor board                             60.0 g   z =     +0 mm
+  UHF radio board                               80.0 g   z =    +20 mm
+  payload electronics board                    100.0 g   z =    +40 mm
+  payload camera + optics                     1000.0 g   z =   +105 mm
+  antenna deployer                              80.0 g   z =   +162 mm
+  stack rods, spacers, harness, fasteners      200.0 g   z =    -10 mm
+  TOTAL (modelled)                            3462.2 g   -> margin to 4.0 kg design: 538 g, to CDS 6.00 kg: 2538 g
+  structure fraction: 702 g = 20 % of total
+  centre of mass z = +10.9 mm  (CDS limit +-70 mm) -> OK
+  inertia about CoM: [0.0379 0.0378 0.0063] kg m^2   (Project 6 used [0.041 0.04  0.007])
+
+== 2. quasi-static 10 g limit load (each axis separately)
+  rail angle 8.5 x 1.5 mm: A = 23.25 mm^2, I_min = 64 mm^4
+  section: I_rails = 208935 mm^4, I_walls = 502053 mm^4
+  m = 4.0 kg: W = 392 N | rail axial 4.2 MPa (MS 95) | buckling P_cr 390 N vs 98 N (MS 1.8) | root bending 16.0 MPa (MS_y 24.3, MS_u 24.5, no-test MS_y 14.8) | end bearing 2.3 MPa
+  m = 6.0 kg: W = 588 N | rail axial 6.3 MPa (MS 63) | buckling P_cr 390 N vs 147 N (MS 0.9) | root bending 24.0 MPa (MS_y 15.9, MS_u 16.0, no-test MS_y 9.5) | end bearing 3.5 MPa
+  NOTE: the hollow rail end is only 23 mm^2 < 6.5 x 6.5 = 42 mm^2 required by CDS 2.2.8 -> rails need solid end feet.
+  NOTE: buckling over the full length is the weakest check; frames every 1U cut the free length to 1/3 -> P_cr = 3509 N (x9).
+
+== 3. natural frequencies
+  bus as cantilever from -Z (test-fixture case), 4.0 kg smeared:
+    bending, walls + rails, Euler-Bernoulli :    309 Hz
+    bending, walls + rails, Timoshenko      :    255 Hz  (shear in 1 mm walls)
+    bending, rails only (no walls), E-B     :    170 Hz  (lower bound on bending)
+    axial                                   :   1166 Hz
+  (inside the deployer the rails are guided along their length, so global bending is
+   suppressed and the internal boards set the first mode -> see below)
+  PCBs, 90.17 x 95.89 x 1.6 mm FR-4, 4 corner supports, bare board 26 g, mass smeared:
+    battery board                  250 g : f1 =    85 Hz  (E -30 %/+30 %: 71-97)  < 100 Hz
+    EPS board                       90 g : f1 =   142 Hz  (E -30 %/+30 %: 119-162)  OK
+    OBC board                       70 g : f1 =   161 Hz  (E -30 %/+30 %: 135-184)  OK
+    ADCS sensor board               60 g : f1 =   174 Hz  (E -30 %/+30 %: 146-198)  OK
+    UHF radio board                 80 g : f1 =   151 Hz  (E -30 %/+30 %: 126-172)  OK
+    payload electronics board      100 g : f1 =   135 Hz  (E -30 %/+30 %: 113-154)  OK
+    max board mass for f1 >= 100 Hz with corner supports only: 182 g
+
+== 4. random vibration, GEVS qualification (14.1 grms input), Miles with Q = 10
+  bus bending (Timoshenko)     fn =   255 Hz ->  25.3 grms, 3-sigma    76 g, 3-sigma displacement 0.29 mm
+  bus axial                    fn =  1166 Hz ->  37.3 grms, 3-sigma   112 g, 3-sigma displacement 0.02 mm
+  battery board                fn =    85 Hz ->  14.6 grms, 3-sigma    44 g, 3-sigma displacement 1.50 mm
+  EPS board                    fn =   142 Hz ->  18.9 grms, 3-sigma    57 g, 3-sigma displacement 0.70 mm
+  OBC board                    fn =   161 Hz ->  20.1 grms, 3-sigma    60 g, 3-sigma displacement 0.58 mm
+  ADCS sensor board            fn =   174 Hz ->  20.9 grms, 3-sigma    63 g, 3-sigma displacement 0.51 mm
+  UHF radio board              fn =   151 Hz ->  19.5 grms, 3-sigma    58 g, 3-sigma displacement 0.64 mm
+  payload electronics board    fn =   135 Hz ->  18.4 grms, 3-sigma    55 g, 3-sigma displacement 0.76 mm
+  -> 3-sigma random loads are 44-112 g, far above the 10 g quasi-static case: random vibration sizes this structure.
+  rail buckling under the 3-sigma axial load (1096 N per rail, rails only, x1.8 ult.): full length MS = -0.80, frames every 1U MS = +0.78
+
+figures: figures/step1_random_vibration.png, figures/step1_pcb_modes.png

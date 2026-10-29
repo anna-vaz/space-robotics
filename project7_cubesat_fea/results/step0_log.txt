@@ -1,0 +1,27 @@
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+saved D:\Projects\space-robotics\project7_cubesat_fea\results\step0_cantilever.SLDPRT (err 0)
+== licence probe (CreateNewStudy3 error 0 = created)
+  Static                   err=0 created=True
+  Frequency                err=0 created=True
+  Buckling                 err=0 created=True
+  Thermal                  err=0 created=True
+  Fatigue                  err=0 created=True
+  DropTest                 err=0 created=True
+  Topology                 err=0 created=True
+  NonlinearStatic          err=0 created=True
+  NonlinearDynamic         err=0 created=True
+  LinDyn_Transient         err=0 created=True
+  LinDyn_Harmonic          err=0 created=True
+  LinDyn_Random            err=0 created=True
+  LinDyn_ResponseSpectrum  err=0 created=True
+fixed faces found: 1
+AddRestraint err: 0
+mesh h=4 mm: meshErr=0 nodes=14427 elems=9178 runErr=0
+  resonant frequencies (raw): 1, 2560.162, 407.4624, 0.002454214, 2, 2560.434, 407.5057, 0.002453953, 3, 15337.68, 2441.067, 0.0004096569, 4, 15339.83, 2441.41, 0.0004095994, 5, 22226.04, 3537.383, 0.0002826948, 6, 39848.75, 6342.126, 0.0001576758
+  mass participation (raw): 1, 0.04141136, 0.5701575, 1.095914E-12, 2, 0.5701166, 0.04140948, 2.042714E-13, 3, 0.007871295, 0.1847312, 9.75183E-11, 4, 0.1847017, 0.00787189, 2.492475E-11, 5, 1.328501E-11, 1.266463E-10, 1.976322E-10, 6, 4.167916E-09, 2.873785E-08, 0.8071634
+mesh h=2 mm: meshErr=0 nodes=91139 elems=62002 runErr=0
+  resonant frequencies (raw): 1, 2559.246, 407.3166, 0.002455093, 2, 2559.292, 407.3239, 0.002455048, 3, 15335.21, 2440.674, 0.0004097229, 4, 15335.5, 2440.72, 0.0004097151, 5, 22343.79, 3556.124, 0.0002812051, 6, 39842.35, 6341.107, 0.0001577012
+  mass participation (raw): 1, 0.202131, 0.4096005, 6.03515E-14, 2, 0.409596, 0.2021294, 8.084855E-13, 3, 0.05167676, 0.1409754, 1.228735E-13, 4, 0.1409727, 0.05167677, 5.49605E-11, 5, 2.015346E-14, 1.439932E-11, 2.951096E-11, 6, 1.623571E-08, 7.299086E-09, 0.8072984
+done

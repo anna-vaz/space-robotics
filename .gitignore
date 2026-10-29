@@ -13,3 +13,7 @@ project5_ros2_gazebo/results/
 project6_cubesat_adcs/step*_output.txt
 project6_cubesat_adcs/*.jsonl
 project6_cubesat_adcs/step*_log.txt
+project7_cubesat_fea/results/*
+!project7_cubesat_fea/results/*_log.txt
+!project7_cubesat_fea/results/*_output.txt
+!project7_cubesat_fea/results/*_summary.json
