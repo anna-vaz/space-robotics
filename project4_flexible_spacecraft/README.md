@@ -40,15 +40,15 @@ damps the panels about 6× more than PD for any stiffness from 0.5× to 1.5×, a
 | whole spacecraft, rigid | J = 207 kg m² (panels are 27.5 %) |
 | modal damping | ζ = 0.5 % |
 
-Each panel deflects as $w(x,t)=\sum_i \phi_i(x)\,\eta_i(t)$ with the clamped–free beam modes
+Each panel deflects as $w(x,t)=\sum_i \phi_i(x)\thinspace \eta_i(t)$ with the clamped–free beam modes
 $\phi_i$ (normalised so $\rho\int\phi_i^2dx = 1$). A panel element at distance $r+x$ from the
 axis moves at $(r+x)\dot\theta+\dot w$, and Lagrange's equations give
 
-$$
+```math
 J\ddot\theta+\sum_{k=1,2}\delta^T\ddot\eta_k=u,\qquad
 \ddot\eta_k+2\zeta\Omega\dot\eta_k+\Omega^2\eta_k+\delta\,\ddot\theta=0,
 \qquad \delta_i=\rho\int_0^L (r+x)\,\phi_i(x)\,dx .
-$$
+```
 
 **Checks** (`step1_model.m`):
 
@@ -91,7 +91,7 @@ damping is tiny (ζ = 0.5 %, e-folding time 69 s).
   panel rings at its cantilever frequency with only its structural damping.
 - **Residual vibration of a bang-bang slew** (bottom right). Each torque switch starts a
   decaying oscillation; adding the three gives
-  $|q| = \frac{F}{\omega^2}\,|1-e^{\lambda T/2}|^2$, nearly zero when $T$ is a whole number of
+  $|q| = \frac{F}{\omega^2}\thinspace |1-e^{\lambda T/2}|^2$, nearly zero when $T$ is a whole number of
   *two* vibration periods (every 4.33 s). The hand formula matches the simulation to
   0.11 mm (peak 3.3 mm). This is the idea behind input shaping (step 3).
 - **Smooth profiles help**: the quintic (zero acceleration at both ends) leaves ~10× less
@@ -150,7 +150,7 @@ mode *shapes* do not depend on EI, the stiffness enters exactly as $K = k_{EI}K_
 
 **Error coordinates** (`flex_uss_err.m`). Writing $\theta=\theta_r+e$ and $u=J\ddot\theta_r+u_{fb}+d$,
 the rigid part of the feedforward cancels and the panels are driven by the commanded
-acceleration: $\ddot\eta+C\dot\eta+K\eta+\sqrt2\,\delta\,\ddot e=-\sqrt2\,\delta\,a_r$. This model
+acceleration: $\ddot\eta+C\dot\eta+K\eta+\sqrt2\thinspace \delta\thinspace \ddot e=-\sqrt2\thinspace \delta\thinspace a_r$. This model
 reproduces the step 2 simulation to 1 % (5 ms sampling), and it is the input the controller must reject.
 
 **Design.** Keep the PD + feedforward and add a controller $K_2$ on the same measurements (hub

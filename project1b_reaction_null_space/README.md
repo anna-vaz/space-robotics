@@ -42,9 +42,11 @@ taken about the *moving* base centre and is not conserved unless $P = 0$.
 
 Starting at rest, the momentum stays zero, so the base motion is fixed by the joint rates:
 
-$$M_{bb}\dot q_b + M_{bm}\dot q_m = 0 \quad\Rightarrow\quad \dot q_b = B(q)\,\dot q_m,\qquad B = -M_{bb}^{-1}M_{bm}$$
+```math
+M_{bb}\dot q_b + M_{bm}\dot q_m = 0 \quad\Rightarrow\quad \dot q_b = B(q)\,\dot q_m,\qquad B = -M_{bb}^{-1}M_{bm}
+```
 
-The third row of $B$ gives the base angular rate, $\omega_0 = b(q)\,\dot q_m$.
+The third row of $B$ gives the base angular rate, $\omega_0 = b(q)\thinspace \dot q_m$.
 Joint rates in **null(b)** (a 2-D subspace for 3 joints) leave the base attitude
 untouched. In the example of `step2_rns.py`, the same joint rates rotate the base by
 −14.4° in 4 s when applied directly and by 2e-14° after projection onto null(b).
@@ -52,7 +54,9 @@ untouched. In the example of `step2_rns.py`, the same joint rates rotate the bas
 The end effector moves with the generalized Jacobian $J^* = J_m + J_b B$. Stacking the
 task and the reaction,
 
-$$\begin{bmatrix} v_e \\ \omega_0 \end{bmatrix} = A(q)\,\dot q_m,\qquad A = \begin{bmatrix} J^* \\ b\end{bmatrix}$$
+```math
+\begin{bmatrix} v_e \\ \omega_0 \end{bmatrix} = A(q)\,\dot q_m,\qquad A = \begin{bmatrix} J^* \\ b\end{bmatrix}
+```
 
 where $\det A \neq 0$ means any end-effector velocity can be produced with exactly zero
 base rotation. Where $\det A = 0$ (an **RNS singularity**) one direction is lost. Like the
@@ -62,17 +66,17 @@ dynamic singularities of project 3, these depend on the masses, not only on the 
 
 ## Using the redundancy: three controllers
 
-Every solution of $J^*\dot q_m = v$ is $\dot q_m = J^{*+}v + s\,n$, where
+Every solution of $J^*\dot q_m = v$ is $\dot q_m = J^{*+}v + s\thinspace n$, where
 $n = r_1 \times r_2$ spans the null space of $J^*$ (rows $r_1, r_2$). The resulting base
-rate is $\omega_0 = bJ^{*+}v + (b\cdot n)\,s$, and $b \cdot n = \det A$.
+rate is $\omega_0 = bJ^{*+}v + (b\cdot n)\thinspace s$, and $b \cdot n = \det A$.
 The controllers differ only in $s$ (with $v$ including end-effector position feedback
-and $\omega_c = -K_\theta\,\theta_0$):
+and $\omega_c = -K_\theta\thinspace \theta_0$):
 
 | Controller | $s$ | Behaviour |
 |---|---|---|
 | min-norm | $0$ | smallest joint rates, base ignored |
 | exact RNS | $(\omega_c - bJ^{*+}v)/\det A$ | zero base rotation, but $s\to\infty$ as $\det A \to 0$ |
-| task priority + damped RNS | $\det A\,(\omega_c - bJ^{*+}v)/(\det A^2 + \lambda^2)$ | end effector first, base second; bounded near the singularity |
+| task priority + damped RNS | $\det A\thinspace (\omega_c - bJ^{*+}v)/(\det A^2 + \lambda^2)$ | end effector first, base second; bounded near the singularity |
 
 Results for two straight paths (8 s, `step3_path_tracking.py`):
 

@@ -23,7 +23,9 @@ disturbance caused by the arm must be predicted and limited.
 The arm is mounted at the middle of the base's right face.
 Generalized coordinates (5 DOF, versus 2 for a fixed-base arm):
 
-$$q = [x_0,\ y_0,\ \theta_0,\ q_1,\ q_2]^T$$
+```math
+q = [x_0,\ y_0,\ \theta_0,\ q_1,\ q_2]^T
+```
 
 base position, base attitude, and the two joint angles.
 
@@ -31,10 +33,14 @@ base position, base attitude, and the two joint angles.
 
 Lagrange's equations with kinetic energy only (no potential energy):
 
-$$T = \sum_{i=0}^{2}\left(\tfrac12 m_i\, v_i^T v_i + \tfrac12 I_i\,\omega_i^2\right) = \tfrac12\,\dot q^T M(q)\,\dot q,
-\qquad M(q) = \sum_i \left(m_i J_{v,i}^T J_{v,i} + I_i J_{\omega,i}^T J_{\omega,i}\right)$$
+```math
+T = \sum_{i=0}^{2}\left(\tfrac12 m_i\, v_i^T v_i + \tfrac12 I_i\,\omega_i^2\right) = \tfrac12\,\dot q^T M(q)\,\dot q,
+\qquad M(q) = \sum_i \left(m_i J_{v,i}^T J_{v,i} + I_i J_{\omega,i}^T J_{\omega,i}\right)
+```
 
-$$M(q)\,\ddot q + c(q,\dot q) = \tau, \qquad \tau = [0,\ 0,\ 0,\ \tau_1,\ \tau_2]^T$$
+```math
+M(q)\,\ddot q + c(q,\dot q) = \tau, \qquad \tau = [0,\ 0,\ 0,\ \tau_1,\ \tau_2]^T
+```
 
 The zeros in τ are what make the robot *free-floating*: only the joints are
 actuated. c is obtained from M via Christoffel symbols. Everything is derived

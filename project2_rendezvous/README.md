@@ -16,7 +16,9 @@ robust control of in-orbit systems under parametric uncertainty.
 Close to the target, the chaser's motion in the target's LVLH frame
 (x radial, y along-track, z orbit normal) follows the Clohessy–Wiltshire equations:
 
-$$\ddot x - 3n^2x - 2n\dot y = a_x,\qquad \ddot y + 2n\dot x = a_y,\qquad \ddot z + n^2 z = a_z$$
+```math
+\ddot x - 3n^2x - 2n\dot y = a_x,\qquad \ddot y + 2n\dot x = a_y,\qquad \ddot z + n^2 z = a_z
+```
 
 with mean motion $n=\sqrt{\mu/a^3}$ (92.6 min period at 400 km).
 
@@ -36,7 +38,9 @@ the final phase.
 
 ## 2. Translation control (LQR)
 
-$$u = u_{ff}(t) - K\,(s - s_{ref}(t)),\qquad K = R^{-1}B^TP\ \text{(continuous Riccati equation on the CW model)}$$
+```math
+u = u_{ff}(t) - K\,(s - s_{ref}(t)),\qquad K = R^{-1}B^TP\ \text{(continuous Riccati equation on the CW model)}
+```
 
 - Reference: smooth (quintic) path along the V-bar to the 10 m hold point.
 - Feedforward $u_{ff}$ includes the Coriolis term $-2n\dot y_{ref}$ needed to fly a
@@ -50,12 +54,16 @@ Works identically on the CW and the nonlinear model (0.07 mm difference);
 
 ## 3. Attitude (Euler parameters)
 
-$$\dot\beta = \tfrac12[B(\beta)]\,\omega,\qquad J\dot\omega = -\omega\times J\omega + u$$
+```math
+\dot\beta = \tfrac12[B(\beta)]\,\omega,\qquad J\dot\omega = -\omega\times J\omega + u
+```
 
 Lyapunov-based tracking law (Schaub & Junkins):
 
-$$u = -K\epsilon - P\,\delta\omega + J\,{}^B\dot\omega_r + \omega\times J\omega,\qquad
-V = \tfrac12\delta\omega^TJ\delta\omega + 2K(1-\epsilon_0),\quad \dot V = -\delta\omega^TP\,\delta\omega \le 0$$
+```math
+u = -K\epsilon - P\,\delta\omega + J\,{}^B\dot\omega_r + \omega\times J\omega,\qquad
+V = \tfrac12\delta\omega^TJ\delta\omega + 2K(1-\epsilon_0),\quad \dot V = -\delta\omega^TP\,\delta\omega \le 0
+```
 
 The docking axis b₁ tracks the line of sight to the target, which rotates once per orbit.
 

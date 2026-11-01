@@ -26,7 +26,9 @@ which makes them less disturbed by the target).
 With zero total momentum the base velocity is fixed by the joint velocities,
 $M_{bb}\dot q_b + M_{bm}\dot q_m = 0$, so the end-effector velocity is
 
-$$v_e = J^*\dot q_m,\qquad J^* = J_m - J_b M_{bb}^{-1}M_{bm}$$
+```math
+v_e = J^*\dot q_m,\qquad J^* = J_m - J_b M_{bb}^{-1}M_{bm}
+```
 
 (Umetani & Yoshida, 1989). $J^*$ depends on masses and inertias, not only on geometry.
 
@@ -43,13 +45,17 @@ $$v_e = J^*\dot q_m,\qquad J^* = J_m - J_b M_{bb}^{-1}M_{bm}$$
 Guidance: approach a pre-grasp point 10 cm outside the handle (moving with the
 target) → synchronize → close in → track. Control in two layers:
 
-$$\dot q_{m,des} = J^{*+}\left(v_{ref} + K_p(p_{ref}-p_e)\right)$$
+```math
+\dot q_{m,des} = J^{*+}\left(v_{ref} + K_p(p_{ref}-p_e)\right)
+```
 
 with a damped least-squares inverse (safe near singularities), and an exact
 linearization of the free-floating joint dynamics using the generalized inertia
 matrix $H^* = \left([M^{-1}]_{mm}\right)^{-1}$:
 
-$$\tau = H^*\left(K_v(\dot q_{m,des}-\dot q_m) - \ddot q_{m0}\right)$$
+```math
+\tau = H^*\left(K_v(\dot q_{m,des}-\dot q_m) - \ddot q_{m0}\right)
+```
 
 Result: hand–handle distance ≤ 1.1 mm and relative speed ≤ 1.3 mm/s at grasp,
 torques ≤ 0.2 N m, minimum manipulability 0.32. The base rotates 41° on its own.
