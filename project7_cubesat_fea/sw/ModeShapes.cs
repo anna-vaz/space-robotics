@@ -31,7 +31,7 @@ public static class ModeShapes
                 string hit = "?";
                 foreach (var c in comps)
                 {
-                    var b = (double[])c.GetBox(false, false);
+                    var b = c.GetBox(false, false) as double[];
                     if (b != null && x >= b[0] - 1e-4 && x <= b[3] + 1e-4 && y >= b[1] - 1e-4 && y <= b[4] + 1e-4 && z >= b[2] - 1e-4 && z <= b[5] + 1e-4)
                     { if (hit == "?") hit = c.Name2; else hit += "|" + c.Name2; }
                 }

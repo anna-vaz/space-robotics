@@ -1,0 +1,11 @@
+assembly CubeSat_3U_v3_nopanels.SLDASM, gravity scale 1.1725
+Buckling | 10 g Y | cantilever | h = 4 mm | 6 modes | 10/11/2026 12:01:21 AM
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+fixed rail-end faces: 2
+  fixture err 0
+  gravity err 0/0
+  mesh err 0, nodes 302515, 17 s
+  solve err 0, 99 s
+  raw load factors (err 0): 1, -7.8841, 2, -5.708, 3, -5.6879, 4, 5.6844, 5, 5.7243, 6, 7.888

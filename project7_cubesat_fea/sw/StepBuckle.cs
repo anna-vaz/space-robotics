@@ -13,7 +13,7 @@ using SolidWorks.Interop.cosworks;
 
 public static class StepBuckle
 {
-    const string Asm = @"D:\cad free projects\CubeSat 3U\CubeSat_3U_v3.SLDASM";
+    static readonly string Asm = @"D:\cad free projects\CubeSat 3U\" + (System.Environment.GetEnvironmentVariable("SB_ASM") ?? "CubeSat_3U_v3.SLDASM");
     static TextWriter log;
     static void P(string s) { Console.WriteLine(s); if (log != null) { log.WriteLine(s); log.Flush(); } }
     static double[] ToD(object o) { return ((Array)o).Cast<object>().Select(x => Convert.ToDouble(x)).ToArray(); }
@@ -24,7 +24,11 @@ public static class StepBuckle
         char ax = (System.Environment.GetEnvironmentVariable("SB_AXIS") ?? "Y")[0];
         int nModes = int.Parse(System.Environment.GetEnvironmentVariable("SB_N") ?? "4");
         double h = double.Parse(System.Environment.GetEnvironmentVariable("SB_H") ?? "4", ci);
-        log = new StreamWriter(Path.Combine(outDir, "stepB_buckling_v3_" + ax + ".txt"));
+        // SB_G: gravity scale so a lighter model (e.g. panels suppressed) still carries the full 4 kg x 10 g load
+        double gs = double.Parse(System.Environment.GetEnvironmentVariable("SB_G") ?? "1", ci);
+        string tag = System.Environment.GetEnvironmentVariable("SB_TAG") ?? "v3";
+        log = new StreamWriter(Path.Combine(outDir, "stepB_buckling_" + tag + "_" + ax + ".txt"));
+        P("assembly " + Path.GetFileName(Asm) + ", gravity scale " + gs);
         P("Buckling | 10 g " + ax + " | cantilever | h = " + h + " mm | " + nModes + " modes | " + DateTime.Now);
         var sw = SwSim.Connect(log);
         int e = 0, w = 0;
@@ -45,10 +49,10 @@ public static class StepBuckle
                 }
         P("fixed rail-end faces: " + endZ0.Count);
 
-        string name = "Buckle10g_" + ax + "_v3";
+        string name = "Buckle10g_" + ax + "_" + tag;
         var existing = new HashSet<string>();
         for (int i = 0; i < sm.StudyCount; i++) { var s0 = sm.GetStudy(i); if (s0 != null) existing.Add(s0.Name); }
-        for (int k = 2; existing.Contains(name); k++) name = "Buckle10g_" + ax + "_v3_r" + k;
+        for (int k = 2; existing.Contains(name); k++) name = "Buckle10g_" + ax + "_" + tag + "_r" + k;
         int err;
         CWStudy st = sm.CreateNewStudy3(name, 2, 0, out err);
         if (st == null) throw new Exception("study creation failed " + err);
@@ -59,7 +63,7 @@ public static class StepBuckle
         var front = (Feature)((AssemblyDoc)doc).FeatureByName("Front Plane");
         CWGravity g = lr.AddGravity(front, out err);
         g.GravityBeginEdit();
-        double a = -10 * 9.80665;
+        double a = -10 * 9.80665 * gs;
         g.SetGravitationalAcclerationValues(ax == 'X' ? a : 0, ax == 'Y' ? a : 0, ax == 'Z' ? a : 0);
         P("  gravity err " + err + "/" + g.GravityEndEdit());
 
@@ -87,7 +91,7 @@ public static class StepBuckle
             string hit = "";
             foreach (var c in comps)
             {
-                var b = (double[])c.GetBox(false, false);
+                var b = c.GetBox(false, false) as double[];
                 if (b != null && x >= b[0] - 1e-4 && x <= b[3] + 1e-4 && y >= b[1] - 1e-4 && y <= b[4] + 1e-4 && z >= b[2] - 1e-4 && z <= b[5] + 1e-4)
                     hit += (hit == "" ? "" : "|") + c.Name2;
             }
