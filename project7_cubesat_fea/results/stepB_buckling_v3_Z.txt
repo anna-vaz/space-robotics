@@ -1,0 +1,15 @@
+Buckling | 10 g Z | cantilever | h = 4 mm | 4 modes | 09/11/2026 11:15:04 PM
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+fixed rail-end faces: 2
+  fixture err 0
+  gravity err 0/0
+  mesh err 0, nodes 396998, 28 s
+  solve err 0, 180 s
+  raw load factors (err 0): 1, 170.99, 2, 171.41, 3, 231.72, 4, 232.03
+  mode 1: shape peak at (100.7, 8.5, 61.4) mm in solar_panel_v3-2
+  mode 2: shape peak at (-0.8, 8.5, 61.4) mm in solar_panel_v3-1
+  mode 3: shape peak at (101.5, 91.5, 61.4) mm in solar_panel_v3-2
+  mode 4: shape peak at (-1.5, 91.5, 61.4) mm in solar_panel_v3-1
+done 09/11/2026 11:19:06 PM
