@@ -5,8 +5,8 @@ $ErrorActionPreference = 'Stop'
 $here  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $redist = 'C:\Program Files\SOLIDWORKS Corp\SOLIDWORKS\api\redist'
 $refs = @("$redist\SolidWorks.Interop.sldworks.dll", "$redist\SolidWorks.Interop.cosworks.dll",
-          "$redist\SolidWorks.Interop.swconst.dll")
-foreach ($r in $refs) { [void][System.Reflection.Assembly]::LoadFrom($r) }
+          "$redist\SolidWorks.Interop.swconst.dll", "System.Core")
+foreach ($r in $refs) { if ($r -like "*.dll") { [void][System.Reflection.Assembly]::LoadFrom($r) } }
 # C# needs all `using` lines before any type, so hoist them out of both files.
 $lines = (Get-Content "$here\SwSim.cs") + (Get-Content "$here\$Step.cs")
 $usings = $lines | Where-Object { $_ -match '^using [\w\.]+;' } | Sort-Object -Unique
