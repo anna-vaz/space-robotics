@@ -26,6 +26,16 @@ public static class SwSim
         int st = sw.LoadAddIn(AddinDll);   // 0 = loaded now, 2 = already loaded
         log.WriteLine("LoadAddIn(Simulation) status: " + st);
         var cb = (CwAddincallback)sw.GetAddInObject("SldWorks.Simulation");
+        if (cb == null)
+        {   // add-in object not ready yet: wait and retry. Never UnloadAddIn here: with an assembly
+            // that has studies, unloading pops up the modal "save Simulation data?" box.
+            for (int i = 0; i < 10 && cb == null; i++)
+            {
+                System.Threading.Thread.Sleep(1000);
+                cb = (CwAddincallback)sw.GetAddInObject("SldWorks.Simulation");
+            }
+            log.WriteLine("Simulation add-in object after retries: " + (cb != null));
+        }
         if (cb == null) throw new Exception("Simulation add-in object not available");
         CosmosWorks cw = cb.CosmosWorks;
         log.WriteLine("Simulation version: " + cw.VersionNumber);
