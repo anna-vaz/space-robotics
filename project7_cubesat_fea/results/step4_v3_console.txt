@@ -23,3 +23,20 @@ faces: ends Z0 2, Z1 2, rail X 2, rail Y 4
   [deployer] roller rail X err 0
   [deployer] roller rail Y err 0
   [deployer] mesh err 0, nodes 397107, 29 s
+  [deployer] solve err 0, 603 s
+  [deployer] mode   f (Hz)   eff. mass X     Y      Z
+  [deployer]    1     208.8      0.1710 0.0414 0.0000
+  [deployer]    2     210.1      0.0412 0.1719 0.0001
+  [deployer]    3     222.8      0.0000 0.0000 0.0252
+  [deployer]    4     223.6      0.0000 0.0000 0.0222
+  [deployer]    5     236.0      0.0000 0.0000 0.0205
+  [deployer]    6     249.9      0.0000 0.0000 0.0195
+  [deployer]    7     267.2      0.0000 0.0000 0.0163
+  [deployer]    8     288.6      0.0000 0.0000 0.0159
+  [deployer]    9     320.8      0.1047 0.0159 0.0000
+  [deployer]   10     322.8      0.0161 0.1034 0.0000
+  [deployer]   11     395.3      0.0000 0.0003 0.0000
+  [deployer]   12     396.3      0.0000 0.0000 0.0000
+  [deployer] sum of effective mass: X 0.333 Y 0.333 Z 0.120
+done 09/11/2026 9:51:07 PM
+exit 0
