@@ -1,0 +1,25 @@
+Step 4 modal | BC cantilever,deployer | h = 4 mm | 12 modes | 09/11/2026 9:28:16 PM
+components 74, mass 4.000 kg
+faces: ends Z0 2, Z1 2, rail X 2, rail Y 4
+  [cantilever] fixed Z0 err 0
+  [cantilever] mesh err 0, nodes 397107, 29 s
+  [cantilever] solve err 0, 674 s
+  [cantilever] mode   f (Hz)   eff. mass X     Y      Z
+  [cantilever]    1     203.9      0.0073 0.5392 0.0001
+  [cantilever]    2     206.7      0.2839 0.0155 0.0000
+  [cantilever]    3     222.8      0.0000 0.0000 0.0297
+  [cantilever]    4     223.5      0.0000 0.0000 0.0200
+  [cantilever]    5     224.3      0.0001 0.3364 0.0000
+  [cantilever]    6     235.9      0.0000 0.0000 0.0214
+  [cantilever]    7     249.8      0.0000 0.0000 0.0205
+  [cantilever]    8     255.6      0.5642 0.0000 0.0000
+  [cantilever]    9     267.1      0.0000 0.0000 0.0170
+  [cantilever]   10     288.5      0.0000 0.0000 0.0167
+  [cantilever]   11     340.3      0.0004 0.0012 0.0000
+  [cantilever]   12     344.8      0.0168 0.0000 0.0000
+  [cantilever] sum of effective mass: X 0.873 Y 0.892 Z 0.126
+  [deployer] fixed Z0 err 0
+  [deployer] fixed Z1 err 0
+  [deployer] roller rail X err 0
+  [deployer] roller rail Y err 0
+  [deployer] mesh err 0, nodes 397107, 29 s

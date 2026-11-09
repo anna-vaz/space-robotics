@@ -1,26 +1,26 @@
-PART|pcb_mtq.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared mtq v2|CubeSat3U|123.9687
-PART|pcb_battery.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7;47.945:45.085:1.7|-|FR4 smeared battery v2|CubeSat3U|81.8193
-PART|pcb_eps.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared eps v2|CubeSat3U|111.5718
-PART|pcb_obc.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared obc v2|CubeSat3U|86.7781
-PART|pcb_adcs.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared adcs v2|CubeSat3U|74.3812
-PART|pcb_radio.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared radio v2|CubeSat3U|99.1749
-PART|pcb_payload.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared payload v2|CubeSat3U|123.9687
+PART|pcb_mtq.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared mtq v3|CubeSat3U|122.5821
+PART|pcb_battery.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7;47.945:45.085:1.7|-|FR4 smeared battery v3|CubeSat3U|80.9042
+PART|pcb_eps.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared eps v3|CubeSat3U|110.3239
+PART|pcb_obc.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared obc v3|CubeSat3U|85.8075
+PART|pcb_adcs.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared adcs v3|CubeSat3U|73.5493
+PART|pcb_radio.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared radio v3|CubeSat3U|98.0657
+PART|pcb_payload.SLDPRT|PLATE|95.89|90.17|1.6|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7|-|FR4 smeared payload v3|CubeSat3U|122.5821
 PART|rw_plate.SLDPRT|PLATE|95.89|90.17|3|5.08:5.08:1.7;90.81:5.08:1.7;5.08:85.09:1.7;90.81:85.09:1.7;47.945:45.085:1.7|-|6061-T6 (SS)|SOLIDWORKS Materials|69.6681
 PART|bulkhead.SLDPRT|PLATE|97|95|3|5.635:7.495:1.7;91.365:7.495:1.7;5.635:87.505:1.7;91.365:87.505:1.7;48.5:47.5:25|-|6061-T6 (SS)|SOLIDWORKS Materials|58.4430
 PART|cam_bracket_v2.SLDPRT|PLATE|97|95|3|5.635:7.495:1.7;91.365:7.495:1.7;5.635:87.505:1.7;91.365:87.505:1.7|-|6061-T6 (SS)|SOLIDWORKS Materials|74.3473
-PART|rw_wheel.SLDPRT|PLATE|36|36|30|-|-|Dummy reaction wheel v2|CubeSat3U|161.1593
-PART|battery_cell.SLDPRT|TUBE|9.2|0|65|Dummy battery cell v2|CubeSat3U|57.0256
-PART|camera_v2.SLDPRT|PLATE|78|78|40|-|39:39:20:60|Dummy camera v2|CubeSat3U|1239.6867
-PART|antenna.SLDPRT|PLATE|82|82|6|-|-|Dummy antenna v2|CubeSat3U|99.1749
-PART|solar_panel.SLDPRT|PLATE|83|300|1.5|-|-|Solar panel smeared v2|CubeSat3U|148.7624
-PART|rod_v2_46.SLDPRT|TUBE|2.5|0|46|6061-T6 (SS)|SOLIDWORKS Materials|2.4387
-PART|rod_v2_15.SLDPRT|TUBE|2.5|0|15|6061-T6 (SS)|SOLIDWORKS Materials|0.7952
-PART|rod_v2_23p4.SLDPRT|TUBE|2.5|0|23.4|6061-T6 (SS)|SOLIDWORKS Materials|1.2405
-PART|rod_v2_12p4.SLDPRT|TUBE|2.5|0|12.4|6061-T6 (SS)|SOLIDWORKS Materials|0.6574
-PART|rod_v2_13.SLDPRT|TUBE|2.5|0|13|6061-T6 (SS)|SOLIDWORKS Materials|0.6892
-PART|rod_v2_13p4.SLDPRT|TUBE|2.5|0|13.4|6061-T6 (SS)|SOLIDWORKS Materials|0.7104
-PART|rod_v2_35p9.SLDPRT|TUBE|2.5|0|35.9|6061-T6 (SS)|SOLIDWORKS Materials|1.9032
-PART|rod_v2_103.SLDPRT|TUBE|2.5|0|103|6061-T6 (SS)|SOLIDWORKS Materials|5.4605
+PART|rw_wheel.SLDPRT|PLATE|36|36|30|-|-|Dummy reaction wheel v3|CubeSat3U|159.3568
+PART|battery_cell.SLDPRT|TUBE|9.2|0|65|Dummy battery cell v3|CubeSat3U|56.3878
+PART|camera_v2.SLDPRT|PLATE|78|78|40|-|39:39:20:60|Dummy camera v3|CubeSat3U|1225.8215
+PART|antenna.SLDPRT|PLATE|82|82|6|-|-|Dummy antenna v3|CubeSat3U|98.0657
+PART|solar_panel_v3.SLDPRT|PLATE|83|332.5|1.5|-|-|Solar panel smeared v3|CubeSat3U|147.0986
+PART|rod_v3_46.SLDPRT|TUBE|2.5|0|46|6061-T6 (SS)|SOLIDWORKS Materials|2.4387
+PART|rod_v3_15.SLDPRT|TUBE|2.5|0|15|6061-T6 (SS)|SOLIDWORKS Materials|0.7952
+PART|rod_v3_23p4.SLDPRT|TUBE|2.5|0|23.4|6061-T6 (SS)|SOLIDWORKS Materials|1.2405
+PART|rod_v3_12p4.SLDPRT|TUBE|2.5|0|12.4|6061-T6 (SS)|SOLIDWORKS Materials|0.6574
+PART|rod_v3_13.SLDPRT|TUBE|2.5|0|13|6061-T6 (SS)|SOLIDWORKS Materials|0.6892
+PART|rod_v3_13p4.SLDPRT|TUBE|2.5|0|13.4|6061-T6 (SS)|SOLIDWORKS Materials|0.7104
+PART|rod_v3_35p9.SLDPRT|TUBE|2.5|0|35.9|6061-T6 (SS)|SOLIDWORKS Materials|1.9032
+PART|rod_v3_103.SLDPRT|TUBE|2.5|0|103|6061-T6 (SS)|SOLIDWORKS Materials|5.4605
 COMP|pcb_mtq.SLDPRT|1,0,0,0,1,0,0,0,1|2.055,4.915,98|PCB mtq
 COMP|pcb_battery.SLDPRT|1,0,0,0,1,0,0,0,1|2.055,4.915,73|PCB battery
 COMP|pcb_eps.SLDPRT|1,0,0,0,1,0,0,0,1|2.055,4.915,128|PCB eps
@@ -40,52 +40,52 @@ COMP|battery_cell.SLDPRT|0,0,1,0,1,0,-1,0,0|17.5,63.5,83.8|battery cell
 COMP|battery_cell.SLDPRT|0,0,1,0,1,0,-1,0,0|17.5,82,83.8|battery cell
 COMP|camera_v2.SLDPRT|1,0,0,0,1,0,0,0,1|11,11,228.5|camera + lens
 COMP|antenna.SLDPRT|1,0,0,0,1,0,0,0,1|9,9,333.5|antenna deployer
-COMP|solar_panel.SLDPRT|0,0,1,1,0,0,0,1,0|-1.5,8.5,20.25|solar panel -X
-COMP|solar_panel.SLDPRT|0,0,1,1,0,0,0,1,0|100,8.5,20.25|solar panel +X
-COMP|solar_panel.SLDPRT|1,0,0,0,0,1,0,1,0|8.5,0,20.25|solar panel -Y
-COMP|solar_panel.SLDPRT|1,0,0,0,0,1,0,1,0|8.5,98.5,20.25|solar panel +Y
-COMP|rod_v2_46.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,9|standoff 46 mm
-COMP|rod_v2_46.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,9|standoff 46 mm
-COMP|rod_v2_46.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,9|standoff 46 mm
-COMP|rod_v2_46.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,9|standoff 46 mm
-COMP|rod_v2_15.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,58|standoff 15 mm
-COMP|rod_v2_15.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,58|standoff 15 mm
-COMP|rod_v2_15.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,58|standoff 15 mm
-COMP|rod_v2_15.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,58|standoff 15 mm
-COMP|rod_v2_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,74.6|standoff 23.4 mm
-COMP|rod_v2_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,74.6|standoff 23.4 mm
-COMP|rod_v2_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,74.6|standoff 23.4 mm
-COMP|rod_v2_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,74.6|standoff 23.4 mm
-COMP|rod_v2_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,99.6|standoff 12.4 mm
-COMP|rod_v2_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,99.6|standoff 12.4 mm
-COMP|rod_v2_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,99.6|standoff 12.4 mm
-COMP|rod_v2_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,99.6|standoff 12.4 mm
-COMP|rod_v2_13.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,115|standoff 13 mm
-COMP|rod_v2_13.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,115|standoff 13 mm
-COMP|rod_v2_13.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,115|standoff 13 mm
-COMP|rod_v2_13.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,115|standoff 13 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,129.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,129.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,129.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,129.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,144.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,144.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,144.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,144.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,159.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,159.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,159.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,159.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,174.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,174.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,174.6|standoff 13.4 mm
-COMP|rod_v2_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,174.6|standoff 13.4 mm
-COMP|rod_v2_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,189.6|standoff 35.9 mm
-COMP|rod_v2_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,189.6|standoff 35.9 mm
-COMP|rod_v2_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,189.6|standoff 35.9 mm
-COMP|rod_v2_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,189.6|standoff 35.9 mm
-COMP|rod_v2_103.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,228.5|standoff 103 mm
-COMP|rod_v2_103.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,228.5|standoff 103 mm
-COMP|rod_v2_103.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,228.5|standoff 103 mm
-COMP|rod_v2_103.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,228.5|standoff 103 mm
-COMP|rod_v2_15.SLDPRT|1,0,0,0,1,0,0,0,1|50,50,58|battery centre support
+COMP|solar_panel_v3.SLDPRT|0,0,1,1,0,0,0,1,0|-1.5,8.5,4|solar panel -X
+COMP|solar_panel_v3.SLDPRT|0,0,1,1,0,0,0,1,0|100,8.5,4|solar panel +X
+COMP|solar_panel_v3.SLDPRT|1,0,0,0,0,1,0,1,0|8.5,0,4|solar panel -Y
+COMP|solar_panel_v3.SLDPRT|1,0,0,0,0,1,0,1,0|8.5,98.5,4|solar panel +Y
+COMP|rod_v3_46.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,9|standoff 46 mm
+COMP|rod_v3_46.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,9|standoff 46 mm
+COMP|rod_v3_46.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,9|standoff 46 mm
+COMP|rod_v3_46.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,9|standoff 46 mm
+COMP|rod_v3_15.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,58|standoff 15 mm
+COMP|rod_v3_15.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,58|standoff 15 mm
+COMP|rod_v3_15.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,58|standoff 15 mm
+COMP|rod_v3_15.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,58|standoff 15 mm
+COMP|rod_v3_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,74.6|standoff 23.4 mm
+COMP|rod_v3_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,74.6|standoff 23.4 mm
+COMP|rod_v3_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,74.6|standoff 23.4 mm
+COMP|rod_v3_23p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,74.6|standoff 23.4 mm
+COMP|rod_v3_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,99.6|standoff 12.4 mm
+COMP|rod_v3_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,99.6|standoff 12.4 mm
+COMP|rod_v3_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,99.6|standoff 12.4 mm
+COMP|rod_v3_12p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,99.6|standoff 12.4 mm
+COMP|rod_v3_13.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,115|standoff 13 mm
+COMP|rod_v3_13.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,115|standoff 13 mm
+COMP|rod_v3_13.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,115|standoff 13 mm
+COMP|rod_v3_13.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,115|standoff 13 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,129.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,129.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,129.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,129.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,144.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,144.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,144.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,144.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,159.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,159.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,159.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,159.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,174.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,174.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,174.6|standoff 13.4 mm
+COMP|rod_v3_13p4.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,174.6|standoff 13.4 mm
+COMP|rod_v3_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,189.6|standoff 35.9 mm
+COMP|rod_v3_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,189.6|standoff 35.9 mm
+COMP|rod_v3_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,189.6|standoff 35.9 mm
+COMP|rod_v3_35p9.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,189.6|standoff 35.9 mm
+COMP|rod_v3_103.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,9.995,228.5|standoff 103 mm
+COMP|rod_v3_103.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,9.995,228.5|standoff 103 mm
+COMP|rod_v3_103.SLDPRT|1,0,0,0,1,0,0,0,1|7.135,90.005,228.5|standoff 103 mm
+COMP|rod_v3_103.SLDPRT|1,0,0,0,1,0,0,0,1|92.865,90.005,228.5|standoff 103 mm
+COMP|rod_v3_15.SLDPRT|1,0,0,0,1,0,0,0,1|50,50,58|battery centre support
