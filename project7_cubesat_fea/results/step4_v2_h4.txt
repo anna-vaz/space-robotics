@@ -1,0 +1,43 @@
+Step 4 modal | BC cantilever,deployer | h = 4 mm | 12 modes | 09/11/2026 7:44:21 PM
+SOLIDWORKS revision: 33.4.1
+Simulation version: 891003
+components 74, mass 4.000 kg
+faces: ends Z0 2, Z1 2, rail X 2, rail Y 4
+  [cantilever] fixed Z0 err 0
+  [cantilever] mesh err 0, nodes 375822, 25 s
+  [cantilever] solve err 0, 524 s
+  [cantilever] mode   f (Hz)   eff. mass X     Y      Z
+  [cantilever]    1      67.9      0.0001 0.0000 0.0000
+  [cantilever]    2      67.9      0.0083 0.0000 0.0000
+  [cantilever]    3      68.1      0.0211 0.0000 0.0000
+  [cantilever]    4      68.2      0.0001 0.0000 0.0000
+  [cantilever]    5      72.4      0.0000 0.9247 0.0000
+  [cantilever]    6     191.3      0.0000 0.0000 0.0000
+  [cantilever]    7     191.4      0.0000 0.0000 0.0000
+  [cantilever]    8     191.5      0.0000 0.0000 0.0000
+  [cantilever]    9     191.5      0.0000 0.0000 0.0000
+  [cantilever]   10     204.9      0.2693 0.0050 0.0000
+  [cantilever]   11     206.3      0.0359 0.0394 0.0000
+  [cantilever]   12     221.5      0.0000 0.0000 0.0333
+  [cantilever] sum of effective mass: X 0.335 Y 0.969 Z 0.033
+  [deployer] fixed Z0 err 0
+  [deployer] fixed Z1 err 0
+  [deployer] roller rail X err 0
+  [deployer] roller rail Y err 0
+  [deployer] mesh err 0, nodes 375822, 30 s
+  [deployer] solve err 0, 408 s
+  [deployer] mode   f (Hz)   eff. mass X     Y      Z
+  [deployer]    1      68.5      0.0069 0.0000 0.0000
+  [deployer]    2      68.5      0.0003 0.0000 0.0000
+  [deployer]    3      68.6      0.0149 0.0000 0.0000
+  [deployer]    4      68.6      0.0051 0.0000 0.0000
+  [deployer]    5     192.1      0.0000 0.0000 0.0000
+  [deployer]    6     192.1      0.0000 0.0000 0.0000
+  [deployer]    7     192.2      0.0000 0.0000 0.0000
+  [deployer]    8     192.2      0.0000 0.0000 0.0000
+  [deployer]    9     207.5      0.1747 0.0393 0.0000
+  [deployer]   10     208.8      0.0391 0.1754 0.0001
+  [deployer]   11     221.6      0.0000 0.0000 0.0266
+  [deployer]   12     222.3      0.0000 0.0000 0.0219
+  [deployer] sum of effective mass: X 0.241 Y 0.215 Z 0.049
+done 09/11/2026 8:01:33 PM
