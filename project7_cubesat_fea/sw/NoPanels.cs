@@ -11,10 +11,17 @@ public static class NoPanels
     {
         var sw = (SldWorks)Activator.CreateInstance(Type.GetTypeFromProgID("SldWorks.Application"));
         int e = 0, w = 0;
-        string src = Dir + "CubeSat_3U_v3.SLDASM", dst = Dir + "CubeSat_3U_v3_nopanels.SLDASM";
-        var doc = (ModelDoc2)sw.GetOpenDocumentByName(src) ?? (ModelDoc2)sw.OpenDoc6(src, 2, 0, "", ref e, ref w);
-        bool ok = doc.Extension.SaveAs(dst, 0, 2 /* copy */, null, ref e, ref w);   // v3 stays the open document
-        Console.WriteLine("copy saved: " + ok + " (errors " + e + ")");
+        string ver = System.Environment.GetEnvironmentVariable("NP_VER") ?? "v4";
+        string src = Dir + "CubeSat_3U_" + ver + ".SLDASM", dst = Dir + "CubeSat_3U_" + ver + "_nopanels.SLDASM";
+        // Run in a FRESH SOLIDWORKS session with nothing open: opening the copy while the source assembly
+        // is open hung (dialog). If the copy exists already, only (re)open it and suppress the panels.
+        if (!System.IO.File.Exists(dst))
+        {
+            var doc = (ModelDoc2)sw.GetOpenDocumentByName(src) ?? (ModelDoc2)sw.OpenDoc6(src, 2, 0, "", ref e, ref w);
+            bool ok = doc.Extension.SaveAs(dst, 0, 2 /* copy */, null, ref e, ref w);
+            Console.WriteLine("copy saved: " + ok + " (errors " + e + ")");
+            sw.CloseDoc(doc.GetTitle());
+        }
         var cp = (ModelDoc2)sw.OpenDoc6(dst, 2, 0, "", ref e, ref w);
         sw.ActivateDoc3(cp.GetTitle(), false, 0, ref e);
         double m0 = ((MassProperty)cp.Extension.CreateMassProperty()).Mass;

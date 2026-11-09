@@ -35,8 +35,9 @@ CENTRE_HOLE = [(PCB_A / 2, PCB_B / 2)]
 R_M3 = 1.7
 SO_RO, SO_RI = 2.5, 0.0     # standoff: solid 5 mm rod (tube + M3 screw; a 1.6 mm bore left a 0.1 mm
                             # ring against the 1.7 mm board holes that the mesher could not handle)
-VERSION = "v3"              # v2: lateral bulkheads at the 1U ribs (step-3 finding)
+VERSION = "v4"              # v2: lateral bulkheads at the 1U ribs (step-3 finding)
                             # v3: X-braces in the side-frame pockets + solar panels 332.5 long (step-4 finding)
+                            # v4: braces 3 mm thick (1.5 outward) + 1.5 mm panel pads; X panels move out 1.5 mm (buckling)
 
 # stack levels (bottom face Z of each plate/board), see the comment in the README
 # v2: bulkhead 1 at the first 1U rib (side-frame rib z 109.5..117.5), the camera bracket becomes
@@ -110,8 +111,8 @@ plate("antenna.SLDPRT", 82.0, 82.0, 6.0, group="equipment", budget=0.08, mat="Du
 comps.append(("antenna.SLDPRT", I3, (9.0, 9.0, 333.5), "antenna deployer"))
 plate("solar_panel_v3.SLDPRT", 83.0, 332.5, 1.5, group="equipment", budget=0.12,   # ends land on the 12 mm end bands
       mat="Solar panel smeared " + VERSION, E=20e9, nu=0.13)
-comps += [("solar_panel_v3.SLDPRT", R_SOLAR_X, (-1.5, 8.5, 4.0), "solar panel -X"),
-          ("solar_panel_v3.SLDPRT", R_SOLAR_X, (100.0, 8.5, 4.0), "solar panel +X"),
+comps += [("solar_panel_v3.SLDPRT", R_SOLAR_X, (-3.0, 8.5, 4.0), "solar panel -X"),
+          ("solar_panel_v3.SLDPRT", R_SOLAR_X, (101.5, 8.5, 4.0), "solar panel +X"),
           ("solar_panel_v3.SLDPRT", R_SOLAR_Y, (8.5, 0.0, 4.0), "solar panel -Y"),
           ("solar_panel_v3.SLDPRT", R_SOLAR_Y, (8.5, 98.5, 4.0), "solar panel +Y")]
 
@@ -137,7 +138,7 @@ for f, *_ in comps:
     count[f] = count.get(f, 0) + 1
 # structure (already built, real): frames, panels, end plates incl. countersinks + aperture
 csk = 4 * (np.pi * 1.66 / 3 * (3.36**2 + 3.36 * 1.7 + 1.7**2) - np.pi * 1.7**2 * 1.66)  # mm^3
-m_structure = (2 * 80.556 +   # side frame v3 with X-braces (was 61.838)
+m_structure = (2 * 110.841 +   # side frame v4: braces 3 mm + pads (v3 80.556, v1 61.838)
     0 + 2 * 85.39 + 2 * 49.467) / 1e3 - 2 * csk * RHO_AL * 1e-9 \
     - np.pi * 21.0**2 * 2.0 * RHO_AL * 1e-9
 m_real = m_structure + sum(p["volume"] * 1e-9 * RHO_AL * count[f] for f, p in parts.items() if p["group"] == "real")

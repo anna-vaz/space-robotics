@@ -18,7 +18,7 @@ using SolidWorks.Interop.cosworks;
 
 public static class Step3
 {
-    static readonly string Asm = @"D:\cad free projects\CubeSat 3U\" + (System.Environment.GetEnvironmentVariable("S3_ASM") ?? "CubeSat_3U_v2.SLDASM");
+    static readonly string Asm = @"D:\cad free projects\CubeSat 3U\" + (System.Environment.GetEnvironmentVariable("S3_ASM") ?? "CubeSat_3U_v4.SLDASM");
     static TextWriter log;
 
     static void P(string s) { Console.WriteLine(s); if (log != null) { log.WriteLine(s); log.Flush(); } }

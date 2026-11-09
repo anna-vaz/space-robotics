@@ -1,0 +1,24 @@
+Step 4 modal | BC deployer | h = 4 mm | 12 modes | 10/11/2026 12:36:20 AM
+components 74, mass 4.000 kg
+faces: ends Z0 2, Z1 2, rail X 2, rail Y 4
+  [deployer] fixed Z0 err 0
+  [deployer] fixed Z1 err 0
+  [deployer] roller rail X err 0
+  [deployer] roller rail Y err 0
+  [deployer] mesh err 0, nodes 400023, 27 s
+  [deployer] solve err 0, 647 s
+  [deployer] mode   f (Hz)   eff. mass X     Y      Z
+  [deployer]    1     210.4      0.1418 0.0670 0.0000
+  [deployer]    2     211.4      0.0669 0.1420 0.0000
+  [deployer]    3     224.9      0.0000 0.0000 0.0249
+  [deployer]    4     225.6      0.0000 0.0000 0.0216
+  [deployer]    5     238.2      0.0000 0.0000 0.0201
+  [deployer]    6     252.2      0.0000 0.0000 0.0192
+  [deployer]    7     269.7      0.0000 0.0000 0.0160
+  [deployer]    8     291.3      0.0000 0.0000 0.0156
+  [deployer]    9     323.1      0.1023 0.0182 0.0000
+  [deployer]   10     325.1      0.0186 0.1002 0.0000
+  [deployer]   11     399.0      0.0000 0.0003 0.0000
+  [deployer]   12     400.0      0.0000 0.0000 0.0000
+  [deployer] sum of effective mass: X 0.330 Y 0.328 Z 0.118
+done 10/11/2026 12:47:58 AM

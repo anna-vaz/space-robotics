@@ -1,0 +1,24 @@
+Step 4 modal | BC cantilever | h = 4 mm | 12 modes | 10/11/2026 12:23:54 AM
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+components 74, mass 4.000 kg
+faces: ends Z0 2, Z1 2, rail X 2, rail Y 4
+  [cantilever] fixed Z0 err 0
+  [cantilever] mesh err 0, nodes 400023, 27 s
+  [cantilever] solve err 0, 676 s
+  [cantilever] mode   f (Hz)   eff. mass X     Y      Z
+  [cantilever]    1     207.7      0.0750 0.2965 0.0000
+  [cantilever]    2     208.7      0.2162 0.1060 0.0000
+  [cantilever]    3     224.8      0.0000 0.0000 0.0285
+  [cantilever]    4     225.6      0.0000 0.0000 0.0202
+  [cantilever]    5     235.5      0.0000 0.4764 0.0000
+  [cantilever]    6     238.1      0.0000 0.0000 0.0210
+  [cantilever]    7     252.2      0.0000 0.0000 0.0201
+  [cantilever]    8     260.7      0.5561 0.0000 0.0000
+  [cantilever]    9     269.6      0.0000 0.0000 0.0167
+  [cantilever]   10     291.2      0.0000 0.0000 0.0164
+  [cantilever]   11     344.7      0.0004 0.0033 0.0000
+  [cantilever]   12     349.9      0.0222 0.0000 0.0000
+  [cantilever] sum of effective mass: X 0.870 Y 0.882 Z 0.123
+done 10/11/2026 12:36:00 AM
