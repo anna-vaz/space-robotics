@@ -1,0 +1,15 @@
+Step 3 static 10 g | axes Z | h = 4 mm | BC cantilever | 09/11/2026 10:37:59 PM
+components 74, mass 4.000 kg -> 10 g load 392.3 N
+fixed rail-end faces: 2
+  fixture err 0
+  gravity err 0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh: err 0, nodes 396998, elements 207498, 27 s
+  [Z] gravity set, err 0
+  [Z] solve err 0, 52 s
+  [Z] max displacement 0.0753 mm (node 145211)
+  [Z] max von Mises 11.06 MPa (node 188754)
+  [Z] max-displacement node at (50.2, 50.0, 188.8) mm
+  [Z] max-stress node at (32.0, 54.0, 55.0) mm
