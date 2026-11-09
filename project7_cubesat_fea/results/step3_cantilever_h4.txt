@@ -1,0 +1,105 @@
+Step 3 static 10 g | axes XYZ | h = 4 mm | BC cantilever | 09/11/2026 4:05:10 PM
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+components 69, mass 4.027 kg -> 10 g load 394.9 N
+fixed rail-end faces: 2
+  [X] fixture err 0
+  [X] gravity err 0/0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh control on 41 standoffs (1.2 mm), err 0
+  mesh: err 0, nodes 379892, elements 201857, 24 s
+  solid components in study: 69 | missing: 
+  [X] solve err 0, 51 s
+  [X] max displacement 1.9701 mm (node 31538)
+  [X] max von Mises 193.27 MPa (node 374507)
+  [X] reaction sum (N): Fx 394.88 Fy 0.01 Fz 0.02 |F| 394.88  (379892 entries)
+    standoff_15        max vM   193.27 MPa
+    standoff_46        max vM   150.90 MPa
+    standoff_128p5     max vM   147.20 MPa
+    end_plate          max vM    98.96 MPa
+    standoff_23p4      max vM    96.36 MPa
+    end_plate_top      max vM    93.69 MPa
+    rw_plate           max vM    89.71 MPa
+    standoff_25p4      max vM    74.57 MPa
+    cam_bracket        max vM    60.18 MPa
+    standoff_13p4      max vM    56.38 MPa
+    rw_wheel           max vM    55.69 MPa
+    side_frame         max vM    49.97 MPa
+    pcb_battery        max vM    46.59 MPa
+    pcb_payload        max vM    35.95 MPa
+    pcb_eps            max vM    31.78 MPa
+    pcb_radio          max vM    31.15 MPa
+    pcb_mtq            max vM    30.91 MPa
+    pcb_obc            max vM    30.19 MPa
+    pcb_adcs           max vM    27.56 MPa
+    antenna            max vM    22.65 MPa
+    camera             max vM    16.11 MPa
+    shear_panel        max vM    15.99 MPa
+    solar_panel        max vM    11.49 MPa
+    battery_cell       max vM     4.35 MPa
+  [Y] fixture err 0
+  [Y] gravity err 0/0
+  mesh copied from QS10g_X_cantilever_h4_r2 (err 0), nodes 379892
+  [Y] solve err 0, 664 s
+  [Y] max displacement 2.1775 mm (node 86532)
+  [Y] max von Mises 201.30 MPa (node 374519)
+  [Y] reaction sum (N): Fx 0.02 Fy 394.89 Fz -0.03 |F| 394.89  (379892 entries)
+    standoff_15        max vM   201.30 MPa
+    standoff_46        max vM   167.32 MPa
+    standoff_128p5     max vM   127.01 MPa
+    end_plate          max vM   120.78 MPa
+    end_plate_top      max vM   112.97 MPa
+    standoff_23p4      max vM   105.15 MPa
+    rw_plate           max vM    99.92 MPa
+    side_frame         max vM    97.93 MPa
+    standoff_25p4      max vM    79.09 MPa
+    rw_wheel           max vM    70.60 MPa
+    standoff_13p4      max vM    55.72 MPa
+    pcb_battery        max vM    51.24 MPa
+    cam_bracket        max vM    51.06 MPa
+    pcb_payload        max vM    37.89 MPa
+    pcb_eps            max vM    37.84 MPa
+    pcb_obc            max vM    37.71 MPa
+    pcb_mtq            max vM    35.27 MPa
+    pcb_adcs           max vM    34.86 MPa
+    pcb_radio          max vM    34.75 MPa
+    antenna            max vM    32.12 MPa
+    solar_panel        max vM    27.50 MPa
+    shear_panel        max vM    21.94 MPa
+    camera             max vM    12.55 MPa
+    battery_cell       max vM     6.97 MPa
+  [Z] fixture err 0
+  [Z] gravity err 0/0
+  mesh copied from QS10g_X_cantilever_h4_r2 (err 0), nodes 379892
+  [Z] solve err 0, 111 s
+  [Z] max displacement 0.0808 mm (node 147608)
+  [Z] max von Mises 11.43 MPa (node 176675)
+  [Z] reaction sum (N): Fx -0.01 Fy 0.00 Fz 394.88 |F| 394.88  (379892 entries)
+    rw_wheel           max vM    11.43 MPa
+    standoff_15        max vM     9.96 MPa
+    end_plate          max vM     9.22 MPa
+    standoff_46        max vM     9.00 MPa
+    rw_plate           max vM     7.68 MPa
+    camera             max vM     7.17 MPa
+    pcb_payload        max vM     6.45 MPa
+    pcb_mtq            max vM     6.44 MPa
+    standoff_23p4      max vM     5.84 MPa
+    standoff_25p4      max vM     5.71 MPa
+    pcb_eps            max vM     5.63 MPa
+    standoff_13p4      max vM     5.62 MPa
+    pcb_radio          max vM     5.11 MPa
+    pcb_battery        max vM     5.02 MPa
+    side_frame         max vM     4.90 MPa
+    cam_bracket        max vM     4.59 MPa
+    standoff_128p5     max vM     4.43 MPa
+    pcb_obc            max vM     4.35 MPa
+    pcb_adcs           max vM     3.78 MPa
+    end_plate_top      max vM     3.26 MPa
+    shear_panel        max vM     2.58 MPa
+    antenna            max vM     1.53 MPa
+    solar_panel        max vM     1.22 MPa
+    battery_cell       max vM     0.91 MPa
+done 09/11/2026 4:30:00 PM

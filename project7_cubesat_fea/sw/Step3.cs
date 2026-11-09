@@ -95,7 +95,7 @@ public static class Step3
             P("  [" + ax + "] gravity err " + err + "/" + ge);
 
             var mesh = st.Mesh;
-            if (meshedStudy == null)
+            if (true)  // mesh every study: CopyMeshFromStudy + global bonding raises a modal warning
             {
                 // blended curvature-based mesher: robust on the tiny 0.1 mm annulus where the standoff
                 // bore (r 1.6) meets the board holes (r 1.7); max = h, min = h/4
