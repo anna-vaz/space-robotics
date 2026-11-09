@@ -1,0 +1,27 @@
+// Renders one part (path in env SHOT_PART) to results/shots/<name>_isometric.png-ready BMP. Read-only.
+using System;
+using System.IO;
+using SolidWorks.Interop.sldworks;
+
+public static class ShotPart
+{
+    public static void Run(string outDir)
+    {
+        string path = System.Environment.GetEnvironmentVariable("SHOT_PART");
+        var sw = (SldWorks)Activator.CreateInstance(Type.GetTypeFromProgID("SldWorks.Application"));
+        int e = 0, w = 0;
+        var doc = (ModelDoc2)sw.OpenDoc6(path, 1, 0, "", ref e, ref w);
+        sw.ActivateDoc3(doc.GetTitle(), false, 0, ref e);
+        string dir = Path.Combine(outDir, "shots");
+        Directory.CreateDirectory(dir);
+        foreach (string v in new[] { "*Isometric", "*Trimetric" })
+        {
+            doc.ShowNamedView2(v, -1);
+            doc.ViewZoomtofit2();
+            doc.GraphicsRedraw2();
+            string f = Path.Combine(dir, Path.GetFileNameWithoutExtension(path) + "_" + v.Trim('*').ToLower() + ".bmp");
+            doc.SaveBMP(f, 2000, 1400);
+            Console.WriteLine(f);
+        }
+    }
+}
