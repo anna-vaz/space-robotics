@@ -1,52 +1,52 @@
 {
- "scale": 1.2727445333046283,
+ "scale": 1.2396866830061335,
  "m_structure": 0.3854872590786968,
- "m_real": 0.5635897600775033,
+ "m_real": 0.652845955883439,
  "m_equip_nominal": 2.7,
  "harness": 0.11,
- "m_nominal_total": 3.3735897600775036,
+ "m_nominal_total": 3.4628459558834392,
  "parts": {
   "pcb_mtq.SLDPRT": {
    "count": 1,
-   "target_g": 127.27445333046283,
-   "rho": 9238.763386568759,
-   "mat": "FR4 smeared mtq"
+   "target_g": 123.96866830061336,
+   "rho": 8998.798767602051,
+   "mat": "FR4 smeared mtq v2"
   },
   "pcb_battery.SLDPRT": {
    "count": 1,
-   "target_g": 84.00113919810548,
-   "rho": 6104.020431579347,
-   "mat": "FR4 smeared battery"
+   "target_g": 81.81932107840481,
+   "rho": 5945.476601010163,
+   "mat": "FR4 smeared battery v2"
   },
   "pcb_eps.SLDPRT": {
    "count": 1,
-   "target_g": 114.54700799741654,
-   "rho": 8314.887047911881,
-   "mat": "FR4 smeared eps"
+   "target_g": 111.57180147055202,
+   "rho": 8098.9188908418455,
+   "mat": "FR4 smeared eps v2"
   },
   "pcb_obc.SLDPRT": {
    "count": 1,
-   "target_g": 89.09211733132399,
-   "rho": 6467.134370598132,
-   "mat": "FR4 smeared obc"
+   "target_g": 86.77806781042935,
+   "rho": 6299.159137321436,
+   "mat": "FR4 smeared obc v2"
   },
   "pcb_adcs.SLDPRT": {
    "count": 1,
-   "target_g": 76.36467199827769,
-   "rho": 5543.258031941255,
-   "mat": "FR4 smeared adcs"
+   "target_g": 74.381200980368,
+   "rho": 5399.279260561229,
+   "mat": "FR4 smeared adcs v2"
   },
   "pcb_radio.SLDPRT": {
    "count": 1,
-   "target_g": 101.81956266437027,
-   "rho": 7391.010709255007,
-   "mat": "FR4 smeared radio"
+   "target_g": 99.17493464049068,
+   "rho": 7199.039014081641,
+   "mat": "FR4 smeared radio v2"
   },
   "pcb_payload.SLDPRT": {
    "count": 1,
-   "target_g": 127.27445333046283,
-   "rho": 9238.763386568759,
-   "mat": "FR4 smeared payload"
+   "target_g": 123.96866830061336,
+   "rho": 8998.798767602051,
+   "mat": "FR4 smeared payload v2"
   },
   "rw_plate.SLDPRT": {
    "count": 1,
@@ -54,75 +54,93 @@
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
-  "cam_bracket.SLDPRT": {
+  "bulkhead.SLDPRT": {
    "count": 1,
-   "target_g": 69.74168436028847,
+   "target_g": 58.44302102149014,
+   "rho": 2700.0,
+   "mat": "6061-T6 (SS)"
+  },
+  "cam_bracket_v2.SLDPRT": {
+   "count": 1,
+   "target_g": 74.34733383028846,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
   "rw_wheel.SLDPRT": {
    "count": 3,
-   "target_g": 165.4567893296017,
-   "rho": 4255.575857242842,
-   "mat": "Dummy reaction wheel"
+   "target_g": 161.15926879079737,
+   "rho": 4145.042921574006,
+   "mat": "Dummy reaction wheel v2"
   },
   "battery_cell.SLDPRT": {
    "count": 4,
-   "target_g": 58.5462485320129,
-   "rho": 3387.3508991407866,
-   "mat": "Dummy battery cell"
+   "target_g": 57.02558741828214,
+   "rho": 3299.3689546090586,
+   "mat": "Dummy battery cell v2"
   },
-  "camera.SLDPRT": {
+  "camera_v2.SLDPRT": {
    "count": 1,
-   "target_g": 1272.7445333046282,
-   "rho": 3194.2568096571026,
-   "mat": "Dummy camera"
+   "target_g": 1239.6866830061335,
+   "rho": 3889.112784825629,
+   "mat": "Dummy camera v2"
   },
   "antenna.SLDPRT": {
    "count": 1,
-   "target_g": 101.81956266437027,
-   "rho": 2523.784519739497,
-   "mat": "Dummy antenna"
+   "target_g": 99.17493464049068,
+   "rho": 2458.2325659451385,
+   "mat": "Dummy antenna v2"
   },
   "solar_panel.SLDPRT": {
    "count": 4,
-   "target_g": 152.72934399655537,
-   "rho": 4089.1390628261147,
-   "mat": "Solar panel smeared"
+   "target_g": 148.762401960736,
+   "rho": 3982.929102027738,
+   "mat": "Solar panel smeared v2"
   },
-  "standoff_46.SLDPRT": {
+  "rod_v2_46.SLDPRT": {
    "count": 4,
-   "target_g": 1.4397856299548948,
+   "target_g": 2.438661297349077,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
-  "standoff_15.SLDPRT": {
+  "rod_v2_15.SLDPRT": {
    "count": 5,
-   "target_g": 0.46949531411572654,
+   "target_g": 0.7952156404399163,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
-  "standoff_23p4.SLDPRT": {
+  "rod_v2_23p4.SLDPRT": {
    "count": 4,
-   "target_g": 0.7324126900205333,
+   "target_g": 1.2405363990862697,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
-  "standoff_13p4.SLDPRT": {
-   "count": 20,
-   "target_g": 0.4194158139433824,
-   "rho": 2700.0,
-   "mat": "6061-T6 (SS)"
-  },
-  "standoff_25p4.SLDPRT": {
+  "rod_v2_12p4.SLDPRT": {
    "count": 4,
-   "target_g": 0.7950120652359637,
+   "target_g": 0.6573782627636643,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   },
-  "standoff_128p5.SLDPRT": {
+  "rod_v2_13.SLDPRT": {
    "count": 4,
-   "target_g": 4.022009857591391,
+   "target_g": 0.6891868883812609,
+   "rho": 2700.0,
+   "mat": "6061-T6 (SS)"
+  },
+  "rod_v2_13p4.SLDPRT": {
+   "count": 16,
+   "target_g": 0.7103926387929921,
+   "rho": 2700.0,
+   "mat": "6061-T6 (SS)"
+  },
+  "rod_v2_35p9.SLDPRT": {
+   "count": 4,
+   "target_g": 1.9032160994528666,
+   "rho": 2700.0,
+   "mat": "6061-T6 (SS)"
+  },
+  "rod_v2_103.SLDPRT": {
+   "count": 4,
+   "target_g": 5.46048073102076,
    "rho": 2700.0,
    "mat": "6061-T6 (SS)"
   }

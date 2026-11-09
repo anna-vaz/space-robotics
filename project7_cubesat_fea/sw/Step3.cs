@@ -18,7 +18,7 @@ using SolidWorks.Interop.cosworks;
 
 public static class Step3
 {
-    const string Asm = @"D:\cad free projects\CubeSat 3U\CubeSat_3U.SLDASM";
+    static readonly string Asm = @"D:\cad free projects\CubeSat 3U\" + (System.Environment.GetEnvironmentVariable("S3_ASM") ?? "CubeSat_3U_v2.SLDASM");
     static TextWriter log;
 
     static void P(string s) { Console.WriteLine(s); if (log != null) { log.WriteLine(s); log.Flush(); } }
@@ -70,80 +70,60 @@ public static class Step3
         var dummies = comps.Where(c => c.Name2.StartsWith("camera") || c.Name2.StartsWith("rw_wheel")
                                     || c.Name2.StartsWith("battery_cell") || c.Name2.StartsWith("antenna")).Cast<object>().ToArray();
 
-        string meshedStudy = null;
+        // ONE study for all load directions: only the gravity vector changes between solves. A second
+        // study with global bonding pops up a modal "interaction entity cannot be processed" warning,
+        // and DeleteStudy pops up "save Simulation data?" - both block the script.
+        string name = "QS10g_" + tag;
+        var existing = new HashSet<string>();
+        for (int i = 0; i < sm.StudyCount; i++) { var s0 = sm.GetStudy(i); if (s0 != null) existing.Add(s0.Name); }
+        for (int k = 2; existing.Contains(name); k++) name = "QS10g_" + tag + "_r" + k;
+        int err;
+        CWStudy st = sm.CreateNewStudy3(name, 0, 0, out err);
+        if (st == null) throw new Exception("study creation failed " + err);
+        st.ContactManager.SetGlobalContact(0, 0);                  // bonded
+        var lr = st.LoadsAndRestraintsManager;
+        lr.AddRestraint(0, fixedFaces.ToArray(), null, out err);
+        P("  fixture err " + err);
+        // gravity; reference = assembly Front Plane (dir1 = X, dir2 = Y, normal = Z)
+        var front = ((Feature)((AssemblyDoc)doc).FeatureByName("Front Plane"));
+        CWGravity g = lr.AddGravity(front, out err);
+        P("  gravity err " + err);
+
+        var mesh = st.Mesh;
+        string mt = System.Environment.GetEnvironmentVariable("S3_MESHER") ?? "0";
+        mesh.MesherType = int.Parse(mt); mesh.Quality = 1;
+        if (mesh.MesherType != 0) { mesh.Unit = 0; mesh.MaxElementSize = h; mesh.MinElementSize = h / 4; }
+        P("  mesher type " + mesh.MesherType);
+        var mc = mesh.ApplyMeshControl(dummies, out err);
+        if (mc != null) { mc.Units = 0; mc.ElementSize = 3 * h; }
+        P("  mesh control on " + dummies.Length + " dummies (" + 3 * h + " mm), err " + err);
+        // 1 mm shear panels fail to mesh with coarse elements: cap their size at 2 mm
+        var thin = comps.Where(c => c.Name2.StartsWith("shear_panel")).Cast<object>().ToArray();
+        var mc2 = mesh.ApplyMeshControl(thin, out err);
+        if (mc2 != null) { mc2.Units = 0; mc2.ElementSize = Math.Min(h, 2.0); }
+        P("  mesh control on shear panels (" + Math.Min(h, 2.0) + " mm), err " + err);
+        var t0 = DateTime.Now;
+        int me = st.CreateMesh(0, h, h * 0.05);
+        P(string.Format("  mesh: err {0}, nodes {1}, elements {2}, {3:F0} s", me, mesh.NodeCount, mesh.ElementCount, (DateTime.Now - t0).TotalSeconds));
+        int nf = mesh.GetNoOfFailedComponents();
+        if (nf > 0)
+        {
+            int n; var fc = (object[])mesh.GetFailedComponents(out n);
+            throw new Exception("mesh failed for: " + string.Join(", ", fc.Select(o => o is Component2 ? ((Component2)o).Name2 : o.ToString()).ToArray()));
+        }
+        if (me != 0) throw new Exception("meshing failed");
+
         foreach (char ax in axes)
         {
-            // never DeleteStudy: it triggers Simulation's modal "save data?" box. Unique names instead.
-            string name = "QS10g_" + ax + "_" + tag;
-            var existing = new HashSet<string>();
-            for (int i = 0; i < sm.StudyCount; i++) { var s0 = sm.GetStudy(i); if (s0 != null) existing.Add(s0.Name); }
-            for (int k = 2; existing.Contains(name); k++) name = "QS10g_" + ax + "_" + tag + "_r" + k;
-            int err;
-            CWStudy st = sm.CreateNewStudy3(name, 0, 0, out err);
-            if (st == null) throw new Exception("study creation failed " + err);
-            st.ContactManager.SetGlobalContact(0, 0);                  // bonded
-            var lr = st.LoadsAndRestraintsManager;
-            lr.AddRestraint(0, fixedFaces.ToArray(), null, out err);
-            P("  [" + ax + "] fixture err " + err);
-            // gravity 10 g along -axis; reference = assembly Front Plane (dir1 = X, dir2 = Y, normal = Z)
-            var front = ((Feature)((AssemblyDoc)doc).FeatureByName("Front Plane"));
-            CWGravity g = lr.AddGravity(front, out err);
             g.GravityBeginEdit();
             double a = -10 * 9.80665;
             g.SetGravitationalAcclerationValues(ax == 'X' ? a : 0, ax == 'Y' ? a : 0, ax == 'Z' ? a : 0);
-            int ge = g.GravityEndEdit();
-            P("  [" + ax + "] gravity err " + err + "/" + ge);
-
-            var mesh = st.Mesh;
-            if (true)  // mesh every study: CopyMeshFromStudy + global bonding raises a modal warning
-            {
-                // blended curvature-based mesher: robust on the tiny 0.1 mm annulus where the standoff
-                // bore (r 1.6) meets the board holes (r 1.7); max = h, min = h/4
-                string mt = System.Environment.GetEnvironmentVariable("S3_MESHER") ?? "2";
-                mesh.MesherType = int.Parse(mt); mesh.Quality = 1;
-                if (mesh.MesherType != 0) { mesh.Unit = 0; mesh.MaxElementSize = h; mesh.MinElementSize = h / 4; }
-                P("  mesher type " + mesh.MesherType);
-                var mc = mesh.ApplyMeshControl(dummies, out err);
-                if (mc != null) { mc.Units = 0; mc.ElementSize = 3 * h; }
-                P("  mesh control on " + dummies.Length + " dummies (" + 3 * h + " mm), err " + err);
-                // 1 mm shear panels fail to mesh with coarse elements: cap their size at 2 mm
-                var thin = comps.Where(c => c.Name2.StartsWith("shear_panel")).Cast<object>().ToArray();
-                var mc2 = mesh.ApplyMeshControl(thin, out err);
-                if (mc2 != null) { mc2.Units = 0; mc2.ElementSize = Math.Min(h, 2.0); }
-                P("  mesh control on shear panels (" + Math.Min(h, 2.0) + " mm), err " + err);
-                // standoff tubes have a 0.9 mm wall: 1.2 mm elements
-                var tubes = comps.Where(c => c.Name2.StartsWith("standoff")).Cast<object>().ToArray();
-                var mc3 = mesh.ApplyMeshControl(tubes, out err);
-                if (mc3 != null) { mc3.Units = 0; mc3.ElementSize = Math.Min(h, 1.2); }
-                P("  mesh control on " + tubes.Length + " standoffs (" + Math.Min(h, 1.2) + " mm), err " + err);
-                var t0 = DateTime.Now;
-                int me = st.CreateMesh(0, h, h * 0.05);
-                P(string.Format("  mesh: err {0}, nodes {1}, elements {2}, {3:F0} s", me, mesh.NodeCount, mesh.ElementCount, (DateTime.Now - t0).TotalSeconds));
-                int nf = mesh.GetNoOfFailedComponents();
-                if (nf > 0)
-                {
-                    int n; var fc = (object[])mesh.GetFailedComponents(out n);
-                    throw new Exception("mesh failed for: " + string.Join(", ", fc.Select(o => o is Component2 ? ((Component2)o).Name2 : o.ToString()).ToArray()));
-                }
-                var solids = st.SolidManager;
-                var inStudy = new List<string>();
-                for (int i = 0; i < solids.ComponentCount; i++) { int ee; var sc = solids.GetComponentAt(i, out ee); inStudy.Add(sc.ComponentName); }
-                P("  solid components in study: " + inStudy.Count + " | missing: " +
-                  string.Join(", ", comps.Select(c => c.Name2).Where(n => !inStudy.Any(x => x.Contains(n))).ToArray()));
-                if (me != 0) throw new Exception("meshing failed");
-                meshedStudy = name;
-            }
-            else
-            {
-                int ce = st.CopyMeshFromStudy(meshedStudy);
-                P("  mesh copied from " + meshedStudy + " (err " + ce + "), nodes " + mesh.NodeCount);
-            }
+            P("  [" + ax + "] gravity set, err " + g.GravityEndEdit());
             var t1 = DateTime.Now;
             int re = st.RunAnalysis();
             P(string.Format("  [{0}] solve err {1}, {2:F0} s", ax, re, (DateTime.Now - t1).TotalSeconds));
             if (re != 0) continue;
             Report(st, comps, ax, feaDir, doc, tag);
-            doc.Save3(1, ref e, ref w);
         }
         doc.Save3(1, ref e, ref w);
         P("done " + DateTime.Now);
@@ -160,6 +140,11 @@ public static class Step3
         P(string.Format("  [{0}] max displacement {1:F4} mm (node {2})", ax, d[3], d[2]));
         double[] s = ToD(res.GetMinMaxStress(9, 0, 1, null, 3, out err));               // von Mises, MPa
         P(string.Format("  [{0}] max von Mises {1:F2} MPa (node {2})", ax, s[3], s[2]));
+        double nx, ny, nz;
+        st.Mesh.GetNodeLocation((int)d[2], out nx, out ny, out nz);
+        P(string.Format("  [{0}] max-displacement node at ({1:F1}, {2:F1}, {3:F1}) mm", ax, nx * 1e3, ny * 1e3, nz * 1e3));
+        st.Mesh.GetNodeLocation((int)s[2], out nx, out ny, out nz);
+        P(string.Format("  [{0}] max-stress node at ({1:F1}, {2:F1}, {3:F1}) mm", ax, nx * 1e3, ny * 1e3, nz * 1e3));
         // reactions come per node: [node, Fx, Fy, Fz, Fres, Mx, My, Mz, Mres] repeated -> sum
         double[] rf = ToD(res.GetReactionForcesAndMoments(1, null, 0, out err));
         double fx = 0, fy = 0, fz = 0;
@@ -168,6 +153,7 @@ public static class Step3
             ax, fx, fy, fz, Math.Sqrt(fx * fx + fy * fy + fz * fz), rf.Length / 9));
         // per component: max nodal von Mises on its faces
         var groups = new Dictionary<string, double>();
+        var disp = new Dictionary<string, double>();
         foreach (var c in comps)
         {
             var faces = new List<object>();
@@ -182,11 +168,19 @@ public static class Step3
                 for (int i = 1; i < pv.Length; i += 2) mx = Math.Max(mx, pv[i]);
                 string key = c.Name2.Substring(0, c.Name2.LastIndexOf('-'));
                 if (!groups.ContainsKey(key) || groups[key] < mx) groups[key] = mx;
+                object dv = res.GetDisplacementForEntities(3, 1, null, faces.ToArray(), 0, out err);
+                if (!(dv is DBNull) && dv != null)
+                {
+                    double[] dd = ToD(dv); double dm = 0;
+                    for (int i = 1; i < dd.Length; i += 2) dm = Math.Max(dm, dd[i]);
+                    if (!disp.ContainsKey(key) || disp[key] < dm) disp[key] = dm;
+                }
             }
             catch (Exception ex) { P("    stress read failed for " + c.Name2 + ": " + ex.Message); }
         }
         foreach (var kv in groups.OrderByDescending(k => k.Value))
-            P(string.Format("    {0,-18} max vM {1,8:F2} MPa", kv.Key, kv.Value));
+            P(string.Format("    {0,-18} max vM {1,8:F2} MPa   max disp {2,7:F4} mm", kv.Key, kv.Value,
+                disp.ContainsKey(kv.Key) ? disp[kv.Key] : double.NaN));
         foreach (var plot in new[] { new[] { 1, 9, 3 }, new[] { 0, 3, 0 } })
         {
             CWPlot p = res.CreatePlot(plot[0], plot[1], plot[2], false, out err);

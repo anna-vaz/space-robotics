@@ -190,7 +190,7 @@ public static class Interior
     // ------------------------------------------------------------------ assembly
     static void Asm(SldWorks sw, string[] spec)
     {
-        string asmPath = Dir + "CubeSat_3U.SLDASM";
+        string asmPath = Dir + (System.Environment.GetEnvironmentVariable("INTERIOR_ASM") ?? "CubeSat_3U_v2.SLDASM");
         var openAsm = (ModelDoc2)sw.GetOpenDocumentByName(asmPath);
         if (openAsm != null) sw.CloseDoc(openAsm.GetTitle());
         if (File.Exists(asmPath)) File.Delete(asmPath);

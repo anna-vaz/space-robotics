@@ -1,0 +1,79 @@
+Step 3 static 10 g | axes XY | h = 4 mm | BC cantilever | 09/11/2026 5:31:41 PM
+components 74, mass 4.000 kg -> 10 g load 392.3 N
+fixed rail-end faces: 2
+  fixture err 0
+  gravity err 0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh: err 0, nodes 375822, elements 197672, 25 s
+  [X] gravity set, err 0
+  [X] solve err 0, 51 s
+  [X] max displacement 0.8747 mm (node 332231)
+  [X] max von Mises 34.07 MPa (node 167870)
+  [X] max-displacement node at (101.5, 50.0, 320.3) mm
+  [X] max-stress node at (95.4, 10.0, 9.0) mm
+  [X] reaction sum (N): Fx 392.24 Fy 0.00 Fz 0.00 |F| 392.24  (375822 entries)
+    rod_v2_46          max vM    34.07 MPa   max disp  0.0648 mm
+    rod_v2_12p4        max vM    32.29 MPa   max disp  0.0257 mm
+    end_plate          max vM    23.55 MPa   max disp  0.0018 mm
+    rod_v2_23p4        max vM    21.83 MPa   max disp  0.0598 mm
+    rod_v2_15          max vM    20.91 MPa   max disp  0.0662 mm
+    side_frame         max vM    19.71 MPa   max disp  0.0643 mm
+    rw_plate           max vM    16.53 MPa   max disp  0.0660 mm
+    bulkhead           max vM    15.19 MPa   max disp  0.0185 mm
+    shear_panel        max vM    15.13 MPa   max disp  0.0628 mm
+    rod_v2_13          max vM    14.84 MPa   max disp  0.0254 mm
+    pcb_battery        max vM    13.33 MPa   max disp  0.0613 mm
+    pcb_mtq            max vM    11.21 MPa   max disp  0.0296 mm
+    rod_v2_35p9        max vM    11.10 MPa   max disp  0.0553 mm
+    rod_v2_13p4        max vM     9.80 MPa   max disp  0.0575 mm
+    solar_panel        max vM     8.06 MPa   max disp  0.8747 mm
+    rw_wheel           max vM     6.73 MPa   max disp  0.0649 mm
+    cam_bracket_v2     max vM     6.37 MPa   max disp  0.0419 mm
+    pcb_radio          max vM     5.56 MPa   max disp  0.0577 mm
+    pcb_adcs           max vM     4.78 MPa   max disp  0.0525 mm
+    pcb_payload        max vM     4.71 MPa   max disp  0.0559 mm
+    pcb_eps            max vM     4.34 MPa   max disp  0.0275 mm
+    pcb_obc            max vM     3.18 MPa   max disp  0.0411 mm
+    rod_v2_103         max vM     2.86 MPa   max disp  0.0623 mm
+    camera_v2          max vM     1.64 MPa   max disp  0.0618 mm
+    battery_cell       max vM     0.88 MPa   max disp  0.0659 mm
+    end_plate_top      max vM     0.32 MPa   max disp  0.0628 mm
+    antenna            max vM     0.08 MPa   max disp  0.0638 mm
+  [Y] gravity set, err 0
+  [Y] solve err 0, 519 s
+  [Y] max displacement 0.5624 mm (node 276895)
+  [Y] max von Mises 129.18 MPa (node 267107)
+  [Y] max-displacement node at (91.5, 0.0, 340.5) mm
+  [Y] max-stress node at (0.7, 8.7, 13.9) mm
+  [Y] reaction sum (N): Fx 0.01 Fy 392.28 Fz -0.01 |F| 392.28  (375822 entries)
+    side_frame         max vM   129.18 MPa   max disp  0.5624 mm
+    rod_v2_46          max vM   120.11 MPa   max disp  0.2801 mm
+    end_plate          max vM   113.21 MPa   max disp  0.0092 mm
+    rod_v2_15          max vM    92.37 MPa   max disp  0.3347 mm
+    rw_plate           max vM    58.72 MPa   max disp  0.2864 mm
+    rw_wheel           max vM    44.30 MPa   max disp  0.2862 mm
+    rod_v2_12p4        max vM    37.10 MPa   max disp  0.4678 mm
+    solar_panel        max vM    34.36 MPa   max disp  0.5567 mm
+    shear_panel        max vM    28.98 MPa   max disp  0.5605 mm
+    rod_v2_23p4        max vM    27.07 MPa   max disp  0.4353 mm
+    pcb_battery        max vM    24.44 MPa   max disp  0.3409 mm
+    bulkhead           max vM    23.38 MPa   max disp  0.4706 mm
+    pcb_mtq            max vM    18.54 MPa   max disp  0.4408 mm
+    rod_v2_13          max vM    18.09 MPa   max disp  0.4854 mm
+    rod_v2_35p9        max vM    13.77 MPa   max disp  0.5190 mm
+    rod_v2_13p4        max vM    13.28 MPa   max disp  0.5233 mm
+    pcb_radio          max vM     8.74 MPa   max disp  0.5235 mm
+    pcb_adcs           max vM     8.25 MPa   max disp  0.5189 mm
+    cam_bracket_v2     max vM     7.32 MPa   max disp  0.5016 mm
+    pcb_payload        max vM     7.32 MPa   max disp  0.5198 mm
+    pcb_obc            max vM     7.28 MPa   max disp  0.5060 mm
+    rod_v2_103         max vM     6.05 MPa   max disp  0.5600 mm
+    pcb_eps            max vM     4.92 MPa   max disp  0.4875 mm
+    camera_v2          max vM     3.95 MPa   max disp  0.5202 mm
+    end_plate_top      max vM     3.86 MPa   max disp  0.5605 mm
+    battery_cell       max vM     2.79 MPa   max disp  0.3426 mm
+    antenna            max vM     1.56 MPa   max disp  0.5616 mm
+done 09/11/2026 5:50:07 PM
+exit 0

@@ -23,9 +23,15 @@ public static class SwSim
 
     public static CosmosWorks Simulation(SldWorks sw, TextWriter log)
     {
-        int st = sw.LoadAddIn(AddinDll);   // 0 = loaded now, 2 = already loaded
-        log.WriteLine("LoadAddIn(Simulation) status: " + st);
+        // Ask for the add-in object FIRST: calling LoadAddIn on an already loaded Simulation add-in
+        // reloads it, which pops up the modal "save Simulation data?" box for open studies.
         var cb = (CwAddincallback)sw.GetAddInObject("SldWorks.Simulation");
+        if (cb == null)
+        {
+            int st = sw.LoadAddIn(AddinDll);   // 0 = loaded now, 2 = already loaded
+            log.WriteLine("LoadAddIn(Simulation) status: " + st);
+            cb = (CwAddincallback)sw.GetAddInObject("SldWorks.Simulation");
+        }
         if (cb == null)
         {   // add-in object not ready yet: wait and retry. Never UnloadAddIn here: with an assembly
             // that has studies, unloading pops up the modal "save Simulation data?" box.

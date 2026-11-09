@@ -1,0 +1,122 @@
+Step 3 static 10 g | axes XYZ | h = 4 mm | BC cantilever | 09/11/2026 4:57:56 PM
+components 74, mass 4.000 kg -> 10 g load 392.3 N
+fixed rail-end faces: 2
+  [X] fixture err 0
+  [X] gravity err 0/0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh control on 0 standoffs (1.2 mm), err 2
+  mesh: err 0, nodes 375822, elements 197672, 26 s
+  solid components in study: 74 | missing: 
+  [X] solve err 0, 58 s
+  [X] max displacement 0.8747 mm (node 332231)
+  [X] max von Mises 34.07 MPa (node 167870)
+  [X] reaction sum (N): Fx 392.24 Fy 0.00 Fz 0.00 |F| 392.24  (375822 entries)
+    rod_v2_46          max vM    34.07 MPa
+    rod_v2_12p4        max vM    32.29 MPa
+    end_plate          max vM    23.55 MPa
+    rod_v2_23p4        max vM    21.83 MPa
+    rod_v2_15          max vM    20.91 MPa
+    side_frame         max vM    19.71 MPa
+    rw_plate           max vM    16.53 MPa
+    bulkhead           max vM    15.19 MPa
+    shear_panel        max vM    15.13 MPa
+    rod_v2_13          max vM    14.84 MPa
+    pcb_battery        max vM    13.33 MPa
+    pcb_mtq            max vM    11.21 MPa
+    rod_v2_35p9        max vM    11.10 MPa
+    rod_v2_13p4        max vM     9.80 MPa
+    solar_panel        max vM     8.06 MPa
+    rw_wheel           max vM     6.73 MPa
+    cam_bracket_v2     max vM     6.37 MPa
+    pcb_radio          max vM     5.56 MPa
+    pcb_adcs           max vM     4.78 MPa
+    pcb_payload        max vM     4.71 MPa
+    pcb_eps            max vM     4.34 MPa
+    pcb_obc            max vM     3.18 MPa
+    rod_v2_103         max vM     2.86 MPa
+    camera_v2          max vM     1.64 MPa
+    battery_cell       max vM     0.88 MPa
+    end_plate_top      max vM     0.32 MPa
+    antenna            max vM     0.08 MPa
+  [Y] fixture err 0
+  [Y] gravity err 0/0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh control on 0 standoffs (1.2 mm), err 2
+  mesh: err 0, nodes 375822, elements 197672, 25 s
+  solid components in study: 74 | missing: 
+  [Y] solve err 0, 570 s
+  [Y] max displacement 0.5624 mm (node 276895)
+  [Y] max von Mises 129.18 MPa (node 267107)
+  [Y] reaction sum (N): Fx 0.01 Fy 392.28 Fz -0.01 |F| 392.28  (375822 entries)
+    side_frame         max vM   129.18 MPa
+    rod_v2_46          max vM   120.11 MPa
+    end_plate          max vM   113.21 MPa
+    rod_v2_15          max vM    92.37 MPa
+    rw_plate           max vM    58.72 MPa
+    rw_wheel           max vM    44.30 MPa
+    rod_v2_12p4        max vM    37.10 MPa
+    solar_panel        max vM    34.36 MPa
+    shear_panel        max vM    28.98 MPa
+    rod_v2_23p4        max vM    27.07 MPa
+    pcb_battery        max vM    24.44 MPa
+    bulkhead           max vM    23.38 MPa
+    pcb_mtq            max vM    18.54 MPa
+    rod_v2_13          max vM    18.09 MPa
+    rod_v2_35p9        max vM    13.77 MPa
+    rod_v2_13p4        max vM    13.28 MPa
+    pcb_radio          max vM     8.74 MPa
+    pcb_adcs           max vM     8.25 MPa
+    cam_bracket_v2     max vM     7.32 MPa
+    pcb_payload        max vM     7.32 MPa
+    pcb_obc            max vM     7.28 MPa
+    rod_v2_103         max vM     6.05 MPa
+    pcb_eps            max vM     4.92 MPa
+    camera_v2          max vM     3.95 MPa
+    end_plate_top      max vM     3.86 MPa
+    battery_cell       max vM     2.79 MPa
+    antenna            max vM     1.56 MPa
+  [Z] fixture err 0
+  [Z] gravity err 0/0
+  mesher type 0
+  mesh control on 9 dummies (12 mm), err 0
+  mesh control on shear panels (2 mm), err 0
+  mesh control on 0 standoffs (1.2 mm), err 2
+  mesh: err 0, nodes 375822, elements 197672, 25 s
+  solid components in study: 74 | missing: 
+  [Z] solve err 0, 134 s
+  [Z] max displacement 0.0768 mm (node 145211)
+  [Z] max von Mises 11.17 MPa (node 188754)
+  [Z] reaction sum (N): Fx 0.00 Fy 0.01 Fz 392.25 |F| 392.25  (375822 entries)
+    rw_wheel           max vM    11.17 MPa
+    rod_v2_15          max vM     8.37 MPa
+    rod_v2_46          max vM     7.58 MPa
+    rw_plate           max vM     7.44 MPa
+    rod_v2_13p4        max vM     6.24 MPa
+    pcb_mtq            max vM     6.16 MPa
+    end_plate          max vM     6.12 MPa
+    rod_v2_12p4        max vM     6.04 MPa
+    pcb_payload        max vM     5.88 MPa
+    rod_v2_35p9        max vM     5.73 MPa
+    rod_v2_23p4        max vM     5.59 MPa
+    pcb_eps            max vM     5.36 MPa
+    pcb_radio          max vM     4.87 MPa
+    pcb_battery        max vM     4.87 MPa
+    rod_v2_13          max vM     4.85 MPa
+    side_frame         max vM     4.71 MPa
+    pcb_obc            max vM     4.13 MPa
+    pcb_adcs           max vM     3.60 MPa
+    shear_panel        max vM     3.51 MPa
+    camera_v2          max vM     2.76 MPa
+    solar_panel        max vM     1.91 MPa
+    cam_bracket_v2     max vM     1.76 MPa
+    bulkhead           max vM     1.44 MPa
+    rod_v2_103         max vM     1.24 MPa
+    battery_cell       max vM     0.88 MPa
+    end_plate_top      max vM     0.51 MPa
+    antenna            max vM     0.21 MPa
+done 09/11/2026 5:23:54 PM
+exit 0

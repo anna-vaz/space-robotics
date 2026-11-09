@@ -33,11 +33,18 @@ INSET = 5.08
 CORNER_HOLES = [(INSET, INSET), (PCB_A - INSET, INSET), (INSET, PCB_B - INSET), (PCB_A - INSET, PCB_B - INSET)]
 CENTRE_HOLE = [(PCB_A / 2, PCB_B / 2)]
 R_M3 = 1.7
-SO_RO, SO_RI = 2.5, 1.6     # standoff tube, outer / bore radius
+SO_RO, SO_RI = 2.5, 0.0     # standoff: solid 5 mm rod (tube + M3 screw; a 1.6 mm bore left a 0.1 mm
+                            # ring against the 1.7 mm board holes that the mesher could not handle)
+VERSION = "v2"              # v2: lateral bulkheads at the 1U ribs (step-3 finding)
 
 # stack levels (bottom face Z of each plate/board), see the comment in the README
-Z = dict(rw_plate=55.0, battery=73.0, mtq=98.0, eps=113.0, obc=128.0, adcs=143.0,
-         radio=158.0, payload=173.0, cam_bracket=200.0)
+# v2: bulkhead 1 at the first 1U rib (side-frame rib z 109.5..117.5), the camera bracket becomes
+# bulkhead 2 at the second rib (z 223..231). Both span the full 97 x 95 cavity and are bonded/bolted
+# to the side frames and shear panels, so the stack is held laterally at 4 stations, not 2.
+Z = dict(rw_plate=55.0, battery=73.0, mtq=98.0, bulkhead=112.0, eps=128.0, obc=143.0, adcs=158.0,
+         radio=173.0, payload=188.0, cam_bracket=225.5)
+BH_A, BH_B = 97.0, 95.0                 # bulkhead = cavity cross-section
+BH_HOLES = [(5.635, 7.495), (91.365, 7.495), (5.635, 87.505), (91.365, 87.505)]   # = end-plate stack holes
 Z_END_BOT, Z_END_TOP = 9.0, 331.5      # inner faces of the end plates
 T_AL = 3.0                              # RW plate and camera bracket thickness
 
@@ -73,32 +80,35 @@ boards = [("mtq", 0.10), ("battery", 0.066), ("eps", 0.09), ("obc", 0.07), ("adc
 for name, m in boards:
     holes = CORNER_HOLES + (CENTRE_HOLE if name == "battery" else [])
     plate(f"pcb_{name}.SLDPRT", PCB_A, PCB_B, PCB_T, hole_list(holes, R_M3),
-          group="equipment", budget=m, mat=f"FR4 smeared {name}", E=20e9, nu=0.13)
+          group="equipment", budget=m, mat=f"FR4 smeared {name} {VERSION}", E=20e9, nu=0.13)
     comps.append((f"pcb_{name}.SLDPRT", I3, (PCB_X0, PCB_Y0, Z[name]), f"PCB {name}"))
 
 # --- aluminium plates in the stack (real material)
 plate("rw_plate.SLDPRT", PCB_A, PCB_B, T_AL, hole_list(CORNER_HOLES + CENTRE_HOLE, R_M3),
       group="real", mat="6061-T6 (SS)")
 comps.append(("rw_plate.SLDPRT", I3, (PCB_X0, PCB_Y0, Z["rw_plate"]), "RW plate"))
-plate("cam_bracket.SLDPRT", PCB_A, PCB_B, T_AL, hole_list(CORNER_HOLES, R_M3),
+plate("bulkhead.SLDPRT", BH_A, BH_B, T_AL, hole_list(BH_HOLES, R_M3) + [(BH_A / 2, BH_B / 2, 25.0)],
+      group="real", mat="6061-T6 (SS)")          # 50 mm centre cut-out for the harness
+comps.append(("bulkhead.SLDPRT", I3, (1.5, 2.5, Z["bulkhead"]), "bulkhead 1 (1U rib)"))
+plate("cam_bracket_v2.SLDPRT", BH_A, BH_B, T_AL, hole_list(BH_HOLES, R_M3),
       group="real", mat="6061-T6 (SS)")
-comps.append(("cam_bracket.SLDPRT", I3, (PCB_X0, PCB_Y0, Z["cam_bracket"]), "camera bracket"))
+comps.append(("cam_bracket_v2.SLDPRT", I3, (1.5, 2.5, Z["cam_bracket"]), "camera bracket = bulkhead 2 (2U rib)"))
 
 # --- mass dummies
 W = 36.0
-plate("rw_wheel.SLDPRT", W, W, 30.0, group="equipment", budget=0.13, mat="Dummy reaction wheel", E=70e9, nu=0.33)
+plate("rw_wheel.SLDPRT", W, W, 30.0, group="equipment", budget=0.13, mat="Dummy reaction wheel " + VERSION, E=70e9, nu=0.33)
 for cx, cy in [(29, 31), (71, 31), (50, 72)]:
     comps.append(("rw_wheel.SLDPRT", I3, (cx - W / 2, cy - W / 2, Z["rw_plate"] - 30.0), "reaction wheel"))
-cyl("battery_cell.SLDPRT", 9.2, 65.0, group="equipment", budget=0.046, mat="Dummy battery cell", E=70e9, nu=0.33)
+cyl("battery_cell.SLDPRT", 9.2, 65.0, group="equipment", budget=0.046, mat="Dummy battery cell " + VERSION, E=70e9, nu=0.33)
 for cy in (18.0, 36.5, 63.5, 82.0):
     comps.append(("battery_cell.SLDPRT", R_CELL, (17.5, cy, Z["battery"] + PCB_T + 9.2), "battery cell"))
-plate("camera.SLDPRT", 78.0, 78.0, 50.0, boss=(39.0, 39.0, 20.0, 75.0),
-      group="equipment", budget=1.00, mat="Dummy camera", E=70e9, nu=0.33)
-comps.append(("camera.SLDPRT", I3, (11.0, 11.0, Z["cam_bracket"] + T_AL), "camera + lens"))
-plate("antenna.SLDPRT", 82.0, 82.0, 6.0, group="equipment", budget=0.08, mat="Dummy antenna", E=70e9, nu=0.33)
+plate("camera_v2.SLDPRT", 78.0, 78.0, 40.0, boss=(39.0, 39.0, 20.0, 60.0),   # 100 mm tall to fit above rib 2
+      group="equipment", budget=1.00, mat="Dummy camera " + VERSION, E=70e9, nu=0.33)
+comps.append(("camera_v2.SLDPRT", I3, (11.0, 11.0, Z["cam_bracket"] + T_AL), "camera + lens"))
+plate("antenna.SLDPRT", 82.0, 82.0, 6.0, group="equipment", budget=0.08, mat="Dummy antenna " + VERSION, E=70e9, nu=0.33)
 comps.append(("antenna.SLDPRT", I3, (9.0, 9.0, 333.5), "antenna deployer"))
 plate("solar_panel.SLDPRT", 83.0, 300.0, 1.5, group="equipment", budget=0.12,
-      mat="Solar panel smeared", E=20e9, nu=0.13)
+      mat="Solar panel smeared " + VERSION, E=20e9, nu=0.13)
 comps += [("solar_panel.SLDPRT", R_SOLAR_X, (-1.5, 8.5, 20.25), "solar panel -X"),
           ("solar_panel.SLDPRT", R_SOLAR_X, (100.0, 8.5, 20.25), "solar panel +X"),
           ("solar_panel.SLDPRT", R_SOLAR_Y, (8.5, 0.0, 20.25), "solar panel -Y"),
@@ -106,19 +116,18 @@ comps += [("solar_panel.SLDPRT", R_SOLAR_X, (-1.5, 8.5, 20.25), "solar panel -X"
 
 # --- standoffs (6061 tubes) between levels
 corner_xy = [(PCB_X0 + x, PCB_Y0 + y) for x, y in CORNER_HOLES]
-gaps = [("so_46", Z_END_BOT, Z["rw_plate"]),
-        ("so_15", Z["rw_plate"] + T_AL, Z["battery"]),
-        ("so_23p4", Z["battery"] + PCB_T, Z["mtq"])]
-for lo, hi in [("mtq", "eps"), ("eps", "obc"), ("obc", "adcs"), ("adcs", "radio"), ("radio", "payload")]:
-    gaps.append(("so_13p4", Z[lo] + PCB_T, Z[hi]))
-gaps += [("so_25p4", Z["payload"] + PCB_T, Z["cam_bracket"]),
-         ("so_128p5", Z["cam_bracket"] + T_AL, Z_END_TOP)]
-for name, z0, z1 in gaps:
-    f = f"standoff_{name[3:]}.SLDPRT"
+gaps = [(Z_END_BOT, Z["rw_plate"]), (Z["rw_plate"] + T_AL, Z["battery"]),
+        (Z["battery"] + PCB_T, Z["mtq"]), (Z["mtq"] + PCB_T, Z["bulkhead"]),
+        (Z["bulkhead"] + T_AL, Z["eps"])]
+for lo, hi in [("eps", "obc"), ("obc", "adcs"), ("adcs", "radio"), ("radio", "payload")]:
+    gaps.append((Z[lo] + PCB_T, Z[hi]))
+gaps += [(Z["payload"] + PCB_T, Z["cam_bracket"]), (Z["cam_bracket"] + T_AL, Z_END_TOP)]
+for z0, z1 in gaps:
+    f = f"rod_{VERSION}_{z1 - z0:g}".replace(".", "p") + ".SLDPRT"
     tube(f, SO_RO, SO_RI, round(z1 - z0, 4), group="real", mat="6061-T6 (SS)")
     for x, y in corner_xy:
         comps.append((f, I3, (x, y, z0), f"standoff {z1 - z0:g} mm"))
-comps.append(("standoff_15.SLDPRT", I3, (50.0, 50.0, Z["rw_plate"] + T_AL), "battery centre support"))
+comps.append((f"rod_{VERSION}_15.SLDPRT", I3, (50.0, 50.0, Z["rw_plate"] + T_AL), "battery centre support"))
 
 # ---------------------------------------------------------------- masses
 rho = lambda p: RHO_AL if p["mat"] == "6061-T6 (SS)" else None
@@ -164,7 +173,7 @@ for f, p in parts.items():
     lines.append(f"PART|{f}|{p['kind']}|{geo}|{p['mat']}|{lib}|{p['target']*1e3:.4f}")
 for f, R, t, label in comps:
     lines.append(f"COMP|{f}|{','.join(str(v) for v in R)}|{','.join(fmt(v) for v in t)}|{label}")
-with open(os.path.join(HERE, "cad", "interior_spec.txt"), "w") as fh:
+with open(os.path.join(HERE, "cad", f"interior_spec.txt"), "w") as fh:
     fh.write("\n".join(lines) + "\n")
 
 mats = []
