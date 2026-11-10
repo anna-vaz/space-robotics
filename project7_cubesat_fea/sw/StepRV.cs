@@ -75,12 +75,20 @@ public static class StepRV
         if (st == null) throw new Exception("study creation failed " + err);
         P("study " + name + " subtype " + st.DynamicAnalysisSubType);
         var o = st.DynamicStudyOptions;
-        P("  frequency option err " + o.SetFrequencyOption2(1, fmax));
+        // RV_NMODES > 0: fixed number of modes (all modes to 2000 Hz took > 90 min on 400k nodes)
+        int nm = int.Parse(System.Environment.GetEnvironmentVariable("RV_NMODES") ?? "0");
+        P("  frequency option err " + (nm > 0 ? o.SetFrequencyOption2(0, nm) : o.SetFrequencyOption2(1, fmax)) + (nm > 0 ? " (" + nm + " modes)" : " (modes to " + fmax + " Hz)"));
         P("  RV f range err " + o.SetRandomVibrationFrequencyUnits2(1) + "/" + o.SetRandomVibrationFrequencyLowerLimit2(20) + "/" + o.SetRandomVibrationFrequencyUpperLimit2(2000));
-        P("  RV points err " + o.SetRandomVibrationNoOfFrequencyPoints2(40) + ", correlation err " + o.SetRandomVibrationCorrelationOption2(0));
+        // Speed: the "standard" method with all cross-mode terms at 40 points per mode wrote 30 GB in 2 h without
+        // finishing (h = 6 mm, 40 modes). Approximate method (1) + fewer points around each mode by default.
+        int meth = int.Parse(System.Environment.GetEnvironmentVariable("RV_METHOD") ?? "1");
+        int nfp = int.Parse(System.Environment.GetEnvironmentVariable("RV_NFP") ?? "15");
+        P("  RV points (" + nfp + ") err " + o.SetRandomVibrationNoOfFrequencyPoints2(nfp) + ", correlation err " + o.SetRandomVibrationCorrelationOption2(0)
+          + ", method " + meth + " err " + o.SetRandomVibrationAnalysisMethod2(meth));
         var dmp = st.DampingOptions;
-        dmp.DampingType = 0;
-        P("  damping err " + dmp.SetDampingRatios(1, new double[] { 1, 10000, 0.05 }));
+        dmp.DampingType = 0; dmp.ComputeFromMaterialDamping2 = false;
+        // object[] {first mode, last mode, ratio}; double[] is rejected (err 4)
+        P("  damping err " + dmp.SetDampingRatios(1, new object[] { 1, 1000, 0.05 }) + " -> " + string.Join(", ", ToD(dmp.GetDampingRatios()).Select(v => v.ToString("G4", ci)).ToArray()));
         st.ContactManager.SetGlobalContact(0, 0);
         var lr = st.LoadsAndRestraintsManager;
         lr.AddRestraint(0, ends.ToArray(), null, out err); P("  fixture err " + err);
@@ -88,19 +96,30 @@ public static class StepRV
         CWBaseExcitation bex = lr.AddUniformBaseExcitation2(2, front, 3, ax == 'X', ax == 'X' ? 1 : 0, ax == 'Y', ax == 'Y' ? 1 : 0, ax == 'Z', ax == 'Z' ? 1 : 0, out err);
         P("  base excitation err " + err);
         if (bex == null) throw new Exception("base excitation failed");
+        // Curve format (found by sw/RVProbe.cs): object[] { (int)n, f1, y1, ..., fn, yn }, set between
+        // BaseExcitationBeginEdit/EndEdit; y multiplies the excitation value (1 g^2/Hz). SOLIDWORKS interpolates
+        // log-log, so the 4 GEVS corner points reproduce the spectrum exactly.
+        // SOLIDWORKS wants the curve to extend past the analysis range ("additional points are required ... to
+        // cover the upper part of frequency range"): continue the GEVS -6 dB/oct roll-off to 3000 Hz. The
+        // random-vibration integration range stays 20-2000 Hz, so the input level is unchanged.
+        double[] gf = { 20, 50, 800, 2000, 3000 };
+        var cd = new List<object> { gf.Length };
+        // The solver reads the curve's x values in RAD/S (its .OUT echoed 20 -> 3.183 Hz), whatever the
+        // study's frequency unit: give omega = 2 pi f.
+        foreach (double f in gf) { cd.Add(2 * Math.PI * f); cd.Add(Gevs(f)); }
         bex.BaseExcitationBeginEdit();
-        var flat = new List<double>(); foreach (var f in fs) { flat.Add(f); flat.Add(Gevs(f)); }
-        int ce; bool ok = bex.SetTimeOrFrequencyCurve2(flat.ToArray(), out ce);
-        if (!ok || ce != 0)
-        {
-            var withN = new List<double> { fs.Count }; withN.AddRange(flat);
-            ok = bex.SetTimeOrFrequencyCurve2(withN.ToArray(), out ce);
-            P("  curve (count-prefixed) ok " + ok + " err " + ce);
-        }
-        else P("  curve ok, err " + ce);
-        P("  base excitation end edit " + bex.BaseExcitationEndEdit());
+        int ce; bool ok = bex.SetTimeOrFrequencyCurve2(cd.ToArray(), out ce);
+        P("  curve set ok " + ok + " err " + ce + ", end edit " + bex.BaseExcitationEndEdit());
         object cv = bex.GetTimeOrFrequencyCurve();
-        if (cv != null && !(cv is DBNull)) { var c2 = ToD(cv); P("  curve read back: " + c2.Length + " values, first " + string.Join(", ", c2.Take(6).Select(v => v.ToString("G4", ci)).ToArray())); }
+        var c2 = ToD(cv); P("  curve read back: " + string.Join(", ", c2.Select(v => v.ToString("G4", ci)).ToArray()));
+        if (c2.Length != 2 * gf.Length + 1 || Math.Abs(c2[2] - 0.026) > 1e-9 || Math.Abs(c2[1] - 2 * Math.PI * 20) > 1e-6) throw new Exception("input curve not accepted");
+        double g2 = 0;   // exact grms of the log-log curve
+        for (int i = 1; i < gf.Length && gf[i] <= 2000; i++)
+        {
+            double f1 = gf[i - 1], f2 = gf[i], a1 = Gevs(f1), a2 = Gevs(f2), m = Math.Log(a2 / a1) / Math.Log(f2 / f1);
+            g2 += Math.Abs(m + 1) < 1e-9 ? a1 * f1 * Math.Log(f2 / f1) : a1 * f1 / (m + 1) * (Math.Pow(f2 / f1, m + 1) - 1);
+        }
+        P(string.Format("  input level {0:F2} grms (GEVS qualification 14.1)", Math.Sqrt(g2)));
 
         var dummies = comps.Where(c => c.Name2.StartsWith("camera") || c.Name2.StartsWith("rw_wheel")
                                     || c.Name2.StartsWith("battery_cell") || c.Name2.StartsWith("antenna")).Cast<object>().ToArray();

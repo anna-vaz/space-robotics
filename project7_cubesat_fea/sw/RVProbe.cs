@@ -21,7 +21,7 @@ public static class RVProbe
         var o = st.DynamicStudyOptions;
         int u; o.GetRandomVibrationFrequencyUnits2(out u); Console.WriteLine("freq units now " + u);
         foreach (int uu in new[] { 0, 1, 2 }) Console.WriteLine("  set units " + uu + " err " + o.SetRandomVibrationFrequencyUnits2(uu));
-        var dmp = st.DampingOptions; dmp.DampingType = 0;
+        var dmp = st.DampingOptions; dmp.DampingType = 0; dmp.ComputeFromMaterialDamping2 = false; Console.WriteLine("material damping now " + dmp.ComputeFromMaterialDamping2);
         Console.WriteLine("damping now: " + Fmt(dmp.GetDampingRatios()));
         var cands = new Dictionary<string, double[]> {
             { "1 row [1,1000,0.05]", new double[] { 1, 1000, 0.05 } },
@@ -33,6 +33,8 @@ public static class RVProbe
         {
             int rows = kv.Key.StartsWith("2") ? 2 : 1;
             int r = dmp.SetDampingRatios(rows, kv.Value);
+            int r2 = dmp.SetDampingRatios(rows, kv.Value.Cast<object>().ToArray());
+            Console.WriteLine("    (object[] version err " + r2 + ")");
             Console.WriteLine("  damping " + kv.Key + ": err " + r + " -> " + Fmt(dmp.GetDampingRatios()));
         }
         var front = (Feature)((AssemblyDoc)doc).FeatureByName("Front Plane");
@@ -50,22 +52,33 @@ public static class RVProbe
         st.LoadsAndRestraintsManager.AddRestraint(0, ends.ToArray(), null, out err);
         var bex = st.LoadsAndRestraintsManager.AddUniformBaseExcitation2(2, front, 3, false, 0, true, 1, false, 0, out err);
         Console.WriteLine("base exc err " + err + ", curve now " + Fmt(bex.GetTimeOrFrequencyCurve()));
-        var curves = new Dictionary<string, double[]> {
-            { "n,x,y interleaved", new double[] { 3, 20, 0.026, 50, 0.16, 800, 0.16 } },
-            { "n,xs,ys", new double[] { 3, 20, 50, 800, 0.026, 0.16, 0.16 } },
-            { "interleaved no n", new double[] { 20, 0.026, 50, 0.16, 800, 0.16 } },
-            { "n,x,y interleaved 2pt", new double[] { 2, 20, 0.026, 2000, 0.026 } } };
-        foreach (var kv in curves)
-            foreach (bool edit in new[] { false, true })
-            {
-                int ce;
-                if (edit) bex.BaseExcitationBeginEdit();
-                bool ok = bex.SetTimeOrFrequencyCurve2(kv.Value, out ce);
-                int ee = edit ? bex.BaseExcitationEndEdit() : -1;
-                Console.WriteLine("  curve " + kv.Key + (edit ? " (in edit)" : "") + ": ok " + ok + " err " + ce + " end " + ee + " -> " + Fmt(bex.GetTimeOrFrequencyCurve()));
-                int ce1; int r1 = bex.SetTimeOrFrequencyCurve(kv.Value, out ce1);
-                Console.WriteLine("     v1 call: ret " + r1 + " err " + ce1 + " -> " + Fmt(bex.GetTimeOrFrequencyCurve()));
-            }
+        var variants = new List<KeyValuePair<string, object>>();
+        variants.Add(new KeyValuePair<string, object>("object[] int n", new object[] { 3, 20.0, 0.026, 50.0, 0.16, 800.0, 0.16 }));
+        variants.Add(new KeyValuePair<string, object>("double[,] 3x2", new double[,] { { 20, 0.026 }, { 50, 0.16 }, { 800, 0.16 } }));
+        variants.Add(new KeyValuePair<string, object>("object[,] 3x2", new object[,] { { 20.0, 0.026 }, { 50.0, 0.16 }, { 800.0, 0.16 } }));
+        variants.Add(new KeyValuePair<string, object>("double[] n x y", new double[] { 3, 20, 0.026, 50, 0.16, 800, 0.16 }));
+        variants.Add(new KeyValuePair<string, object>("int[]-ish object n=3 then floats(4pt)", new object[] { 4, 20.0, 0.026, 50.0, 0.16, 800.0, 0.16, 2000.0, 0.026 }));
+        foreach (var kv in variants)
+        {
+            int ce = -9; bool ok = false; string ex = "";
+            bex.BaseExcitationBeginEdit();
+            try { ok = bex.SetTimeOrFrequencyCurve2(kv.Value, out ce); } catch (Exception x) { ex = x.Message; }
+            int ee = bex.BaseExcitationEndEdit();
+            bex.BaseExcitationBeginEdit(); string rb = Fmt(bex.GetTimeOrFrequencyCurve()); bex.BaseExcitationEndEdit();
+            Console.WriteLine("  curve " + kv.Key + ": ok " + ok + " err " + ce + " end " + ee + " " + ex + " -> " + rb);
+            int ce2 = -9; bool ok2 = false;
+            try { ok2 = bex.SetTimeOrFrequencyCurve2(kv.Value, out ce2); } catch (Exception x) { ex = x.Message; }
+            Console.WriteLine("     no-edit: ok " + ok2 + " err " + ce2 + " -> " + Fmt(bex.GetTimeOrFrequencyCurve()));
+        }
+        // read curve back through a fresh LoadsAndRestraints lookup
+        var lr2 = st.LoadsAndRestraintsManager;
+        Console.WriteLine("L&R count " + lr2.Count);
+        for (int i = 0; i < lr2.Count; i++)
+        {
+            int ec; object it = lr2.GetLoadsAndRestraints(i, out ec);
+            var b2 = it as CWBaseExcitation;
+            if (b2 != null) Console.WriteLine("  item " + i + " base excitation curve: " + Fmt(b2.GetTimeOrFrequencyCurve()));
+        }
     }
     static string Fmt(object o)
     {
