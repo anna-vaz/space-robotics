@@ -35,7 +35,7 @@ CENTRE_HOLE = [(PCB_A / 2, PCB_B / 2)]
 R_M3 = 1.7
 SO_RO, SO_RI = 2.5, 0.0     # standoff: solid 5 mm rod (tube + M3 screw; a 1.6 mm bore left a 0.1 mm
                             # ring against the 1.7 mm board holes that the mesher could not handle)
-VERSION = "v4"              # v2: lateral bulkheads at the 1U ribs (step-3 finding)
+VERSION = "v5"              # v2: lateral bulkheads at the 1U ribs (step-3 finding)
                             # v3: X-braces in the side-frame pockets + solar panels 332.5 long (step-4 finding)
                             # v4: braces 3 mm thick (1.5 outward) + 1.5 mm panel pads; X panels move out 1.5 mm (buckling)
 
@@ -86,9 +86,11 @@ for name, m in boards:
     comps.append((f"pcb_{name}.SLDPRT", I3, (PCB_X0, PCB_Y0, Z[name]), f"PCB {name}"))
 
 # --- aluminium plates in the stack (real material)
-plate("rw_plate.SLDPRT", PCB_A, PCB_B, T_AL, hole_list(CORNER_HOLES + CENTRE_HOLE, R_M3),
+plate("rw_bulkhead.SLDPRT", BH_A, BH_B, T_AL, hole_list(BH_HOLES + [(BH_A / 2, BH_B / 2)], R_M3),
       group="real", mat="6061-T6 (SS)")
-comps.append(("rw_plate.SLDPRT", I3, (PCB_X0, PCB_Y0, Z["rw_plate"]), "RW plate"))
+# v5: the reaction-wheel plate is a full-width bulkhead fixed to the side frames and shear panels (it was a
+# PC/104-size plate on four 46 mm rods: step-5 random vibration gave 3-sigma 630 MPa at the rod roots)
+comps.append(("rw_bulkhead.SLDPRT", I3, (1.5, 2.5, Z["rw_plate"]), "RW bulkhead"))
 plate("bulkhead.SLDPRT", BH_A, BH_B, T_AL, hole_list(BH_HOLES, R_M3) + [(BH_A / 2, BH_B / 2, 25.0)],
       group="real", mat="6061-T6 (SS)")          # 50 mm centre cut-out for the harness
 comps.append(("bulkhead.SLDPRT", I3, (1.5, 2.5, Z["bulkhead"]), "bulkhead 1 (1U rib)"))
