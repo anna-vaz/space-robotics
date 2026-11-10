@@ -1,0 +1,10 @@
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+damping err 0
+fixture err 0 faces 1
+mesh err 0 nodes 31650
+solve err 0
+FEA: RMS von Mises max 4.32 MPa at z = 0.0 mm; RMS SZ max 7.65 MPa
+hand: f1 408.3 Hz, Q 10.0, SDOF 32.0 g rms, tip rel. disp 0.0747 mm rms, root bending stress 4.53 MPa rms
+FEA / hand (stress) = 1.687
