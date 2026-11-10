@@ -1,0 +1,5 @@
+components: 74, placement errors: 0
+total mass 4000.00 g, CoM (50.00, 49.38, 173.79) mm -> offset from centre (+0.00, -0.62, +3.54) mm
+inertia about CoM: Ixx 0.04140  Iyy 0.04145  Izz 0.00658  (Ixy 8.74E-019 Ixz 2.53E-018 Iyz 3.34E-004) kg m^2
+interferences: 0
+saved D:\cad free projects\CubeSat 3U\CubeSat_3U_v5.SLDASM (errors 0, warnings 0)
