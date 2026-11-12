@@ -127,6 +127,16 @@ public static class StepRV
         var mesh = st.Mesh; mesh.MesherType = 0; mesh.Quality = 1;
         var mc = mesh.ApplyMeshControl(dummies, out err); if (mc != null) { mc.Units = 0; mc.ElementSize = 3 * h; }
         var mc2 = mesh.ApplyMeshControl(thin, out err); if (mc2 != null) { mc2.Units = 0; mc2.ElementSize = Math.Min(h, 2.0); }
+        // RV_RODMESH (mm): local element size on the 5 mm spacer rods (mesh study: the global 6/4 mm elements give
+        // only ~1 element across a rod, and the RV peaks sit at rod/plate joints)
+        string rm = System.Environment.GetEnvironmentVariable("RV_RODMESH");
+        if (!string.IsNullOrEmpty(rm))
+        {
+            var rods = comps.Where(c => c.Name2.StartsWith("rod_")).Cast<object>().ToArray();
+            var mc3 = mesh.ApplyMeshControl(rods, out err);
+            if (mc3 != null) { mc3.Units = 0; mc3.ElementSize = double.Parse(rm, ci); }
+            P("  mesh control on " + rods.Length + " rods (" + rm + " mm), err " + err);
+        }
         var t0 = DateTime.Now;
         int me = st.CreateMesh(0, h, h * 0.05);
         P(string.Format("  mesh err {0}, nodes {1}, {2:F0} s", me, mesh.NodeCount, (DateTime.Now - t0).TotalSeconds));

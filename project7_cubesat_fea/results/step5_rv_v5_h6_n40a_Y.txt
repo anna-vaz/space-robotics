@@ -1,0 +1,25 @@
+Step 5 random vibration | GEVS qual | axis Y | CubeSat_3U_v5.SLDASM | modes to 2000 Hz | h = 6 | 10/11/2026 4:58:56 PM
+input: 63 points, 14.14 grms (trapezoid on the log-spaced points; GEVS 14.1)
+SOLIDWORKS revision: 33.4.1
+LoadAddIn(Simulation) status: 0
+Simulation version: 891003
+components 74, mass 4.000 kg
+fixed rail-end faces: 4
+study RV_GEVSq_Y_v5_h6_n40a subtype 2
+  frequency option err 0 (40 modes)
+  RV f range err 5/0/0
+  RV points (15) err 0, correlation err 0, method 1 err 0
+  damping err 0 -> 1, 1000, 0.05
+  fixture err 0
+  base excitation err 0
+  curve set ok True err 0, end edit 0
+  curve read back: 5, 125.7, 0.026, 314.2, 0.16, 5027, 0.16, 1.257E+04, 0.026, 1.885E+04, 0.01164
+  input level 14.14 grms (GEVS qualification 14.1)
+  mesh err 0, nodes 201544, 16 s
+  solve err 0, 137 s
+  RMS von Mises raw (err 0): 93001, 0.0017781, 73931, 120.7
+  RMS displacement raw (err 0): 1.3059E+05, 1E-23, 65578, 1.0523E+06
+  max RMS stress: 120.7 MPa (3-sigma 362.1) at (92.4, 92.5, 115.0) mm in side_frame-2|bulkhead-1|rod_v5_13-4
+  max RMS displacement: 1.052E+06 mm (3-sigma 3.157E+06) at (50.0, 4.9, 173.0) mm in pcb_radio-1
+  acceleration not available: Unable to cast object of type 'System.DBNull' to type 'System.Array'.
+done 10/11/2026 5:02:24 PM
