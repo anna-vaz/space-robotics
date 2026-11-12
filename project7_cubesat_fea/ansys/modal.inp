@@ -1,0 +1,26 @@
+! Modal analysis of the idealised CubeSat_3U_v5 model.  Run: MAPDL -b -i modal.inp -o modal_<bc>.out
+! BC and NMODE are set by run.py (driver file):
+!   BC = 1 : both rail ends fixed (random-vibration configuration, same as SOLIDWORKS StepRV)
+!   BC = 0 : rail ends at Z = 0 fixed only (cantilever, same as SOLIDWORKS Step4 cantilever)
+/nopr
+/input,model,inp
+/gopr
+/solu
+antype,modal
+modopt,lanb,NMODE,0,2500
+mxpand,NMODE,,,yes
+*if,BC,eq,1,then
+  cmsel,s,RAILENDS
+*else
+  cmsel,s,RAILEND0
+*endif
+d,all,all,0
+allsel
+irlf,-1
+solve
+*do,i,1,NMODE
+  *get,fi,mode,i,freq
+  /com,MODEFREQ %i% %fi%
+*enddo
+finish
+save,modal_db,db

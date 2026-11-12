@@ -1,0 +1,25 @@
+# MAPDL scratch/results (large); keep inputs, generator, parsed results
+*.out
+*.rst
+*.db
+*.esav
+*.full
+*.emat
+*.mode
+*.mlv
+*.err
+*.log
+*.stat
+*.lock
+*.DSP
+*.page
+*.png
+*.ldhi
+*.rdb
+*.BCS
+*.mntr
+*.pvts
+*.r0*
+_drv_*.inp
+model.inp
+test/
