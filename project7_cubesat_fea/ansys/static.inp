@@ -1,0 +1,78 @@
+! 10 g quasi-static load, one axis, cantilever (rail ends at Z = 0 fixed, same as SOLIDWORKS Step3).
+! Set by the driver: DIR (1 = X, 2 = Y, 3 = Z)
+/nopr
+/input,model,inp
+/gopr
+/solu
+antype,static
+cmsel,s,RAILEND0
+d,all,all,0
+allsel
+! inertia load: ACEL is the acceleration of the reference frame, i.e. body load = -ACEL; sign does not matter here
+*if,DIR,eq,1,then
+  acel,98.0665,0,0
+*elseif,DIR,eq,2
+  acel,0,98.0665,0
+*else
+  acel,0,0,98.0665
+*endif
+solve
+finish
+/post1
+set,last
+cmsel,s,RAILEND0
+fsum
+*get,rfx,fsum,0,item,fx
+*get,rfy,fsum,0,item,fy
+*get,rfz,fsum,0,item,fz
+/com,RES REACT %rfx% %rfy% %rfz%
+allsel
+nsort,u,sum
+*get,umax,sort,0,max
+/com,RES UMAX_MM %umax*1000%
+*get,nmat,mat,0,num,max
+*do,m,1,nmat
+  esel,s,mat,,m
+  esel,r,ename,,181
+  *get,ne,elem,0,count
+  *if,ne,gt,0,then
+    nsle,s
+    nsort,s,eqv
+    *get,smx,sort,0,max
+    *get,snd,sort,0,imax
+    /com,SHELLMAT %m% %smx/1e6% %snd%
+  *endif
+*enddo
+allsel
+esel,s,ename,,188
+etable,FXI,smisc,1
+etable,MYI,smisc,2
+etable,MZI,smisc,3
+etable,SZI,smisc,5
+etable,SYI,smisc,6
+etable,FXJ,smisc,14
+etable,MYJ,smisc,15
+etable,MZJ,smisc,16
+etable,SZJ,smisc,18
+etable,SYJ,smisc,19
+*get,e0,elem,0,num,min
+*get,e1,elem,0,num,max
+*cfopen,beams,csv
+*vwrite
+('elem,FXI,MYI,MZI,SZI,SYI,FXJ,MYJ,MZJ,SZJ,SYJ')
+*do,e,e0,e1
+  *get,a1,elem,e,etab,FXI
+  *get,a2,elem,e,etab,MYI
+  *get,a3,elem,e,etab,MZI
+  *get,a4,elem,e,etab,SZI
+  *get,a5,elem,e,etab,SYI
+  *get,b1,elem,e,etab,FXJ
+  *get,b2,elem,e,etab,MYJ
+  *get,b3,elem,e,etab,MZJ
+  *get,b4,elem,e,etab,SZJ
+  *get,b5,elem,e,etab,SYJ
+  *vwrite,e,a1,a2,a3,a4,a5,b1,b2,b3,b4,b5
+  (F8.0,10(',',E14.6))
+*enddo
+*cfclose
+finish

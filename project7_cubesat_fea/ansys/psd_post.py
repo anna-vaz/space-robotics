@@ -19,11 +19,13 @@ def margins(s3, alloy):
     fty, ftu = ALLOW[alloy]
     return fty / (FSY * s3) - 1, ftu / (FSU * s3) - 1
 
-def post(axis):
-    out = open(os.path.join(HERE, f"psd_{axis}.out"), errors="ignore").read()
+def post(axis, kind="psd"):
+    """kind psd: 1-sigma results x 3; kind static: 10 g limit stresses x 1"""
+    k3 = 3 if kind == "psd" else 1
+    out = open(os.path.join(HERE, f"{kind}_{axis}.out"), errors="ignore").read()
     mp = json.load(open(os.path.join(HERE, "model_map.json")))
     labels = {int(m.group(1)): m.group(2) for m in re.finditer(r"^! mat (\d+): (.*)$", open(os.path.join(HERE, "model.inp")).read(), re.M)}
-    rows = {int(float(r["elem"])): {k: float(v) for k, v in r.items()} for r in csv.DictReader(open(os.path.join(HERE, f"beams_{axis}.csv")))}
+    rows = {int(float(r["elem"])): {k: float(v) for k, v in r.items()} for r in csv.DictReader(open(os.path.join(HERE, f"beams_{axis}.csv" if kind == "psd" else f"beams_static_{axis}.csv")))}
     res = []
     # spacers: round 5 mm 6061-T6
     A, Z = math.pi * 2.5e-3 ** 2, math.pi * (2.5e-3) ** 3 / 4
@@ -55,15 +57,22 @@ def post(axis):
         part = lab[lab.find("[") + 1: lab.find(" x")] if "[" in lab else lab
         res.append((part, alloy, float(m.group(2)) * 1e6, 0.0, 0.0))
     umax = re.search(r"^\s*RES UMAX_MM\s+([0-9.Ee+-]+)", out, re.M)
-    lines = [f"Ansys PSD, GEVS qualification 14.1 grms, axis {axis}, 5 % damping, both rail ends fixed",
-             f"1-sigma max displacement (relative) {float(umax.group(1)):.4f} mm" if umax else "",
-             f"{'item':48s} {'alloy':5s} {'1-sig MPa':>9s} {'3-sig MPa':>9s} {'MS yield':>9s} {'MS ult':>8s}"]
-    for name, alloy, s1, N, M in sorted(res, key=lambda t: -3 * t[2] / ALLOW[t[1]][0]):
-        my, mu = margins(3 * s1, alloy)
-        lines.append(f"{name[:48]:48s} {alloy:5s} {s1 / 1e6:9.2f} {3 * s1 / 1e6:9.1f} {my:+9.2f} {mu:+8.2f}")
+    react = re.search(r"^\s*RES REACT\s+(\S+)\s+(\S+)\s+(\S+)", out, re.M)
+    if kind == "psd":
+        lines = [f"Ansys PSD, GEVS qualification 14.1 grms, axis {axis}, 5 % damping, both rail ends fixed",
+                 f"1-sigma max displacement (relative) {float(umax.group(1)):.4f} mm" if umax else "",
+                 f"{'item':48s} {'alloy':5s} {'1-sig MPa':>9s} {'3-sig MPa':>9s} {'MS yield':>9s} {'MS ult':>8s}"]
+    else:
+        lines = [f"Ansys static 10 g, axis {axis}, cantilever (rail ends at Z = 0 fixed)",
+                 "reaction sum (N): " + " ".join(f"{float(v):.2f}" for v in react.groups()) + "  (expected 392.27 N)" if react else "",
+                 f"max displacement {float(umax.group(1)):.4f} mm" if umax else "",
+                 f"{'item':48s} {'alloy':5s} {'':>9s} {'limit MPa':>9s} {'MS yield':>9s} {'MS ult':>8s}"]
+    for name, alloy, s1, N, M in sorted(res, key=lambda t: -t[2] / ALLOW[t[1]][0]):
+        my, mu = margins(k3 * s1, alloy)
+        lines.append(f"{name[:48]:48s} {alloy:5s} {(s1 / 1e6 if k3 == 3 else float('nan')):9.2f} {k3 * s1 / 1e6:9.1f} {my:+9.2f} {mu:+8.2f}")
     txt = "\n".join(l for l in lines if l)
-    open(os.path.join(HERE, "..", "results", f"ansys_psd_{axis}.txt"), "w").write(txt + "\n")
+    open(os.path.join(HERE, "..", "results", f"ansys_{kind}_{axis}.txt"), "w").write(txt + "\n")
     print(txt)
 
 if __name__ == "__main__":
-    post(sys.argv[1])
+    post(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "psd")
