@@ -22,7 +22,7 @@ def run(inp, out, params, jobname, np_=4):
     return txt, time.time() - t0, int(nerr[-1]) if nerr else -1
 
 def modal(bc, nmode):
-    tag = {1: "bothends", 0: "cantilever"}[bc]
+    tag = {1: "bothends", 0: "cantilever"}[bc] + os.environ.get("AN_SUFFIX", "")
     if os.environ.get("PARSE_ONLY"):
         txt, dt, nerr = open(os.path.join(HERE, f"modal_{tag}.out"), errors="ignore").read(), 0, 0
     else:

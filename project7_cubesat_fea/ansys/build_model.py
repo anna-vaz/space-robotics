@@ -34,6 +34,14 @@ for line in open(SPEC, encoding="utf8"):
     elif f[0] == "COMP":
         comps.append((f[1], [float(v) for v in f[2].split(",")], [float(v) for v in f[3].split(",")], f[4]))
 gmass = {k: float(v[-1]) for k, v in parts.items()}
+# light case (AN_LIGHT=1): equipment back to its step-1 budget + harness smeared over it (interior_budget.json);
+# real structural parts (6061-T6 (SS)) unchanged.  4.000 kg -> m_real + m_equip_nominal + harness = 3.565 kg
+LIGHT = os.environ.get("AN_LIGHT") == "1"
+if LIGHT:
+    bud = json.load(open(os.path.join(HERE, "..", "results", "interior_budget.json")))
+    k_light = (bud["m_equip_nominal"] + bud["harness"]) / (bud["m_equip_nominal"] * bud["scale"])
+    for k, v in parts.items():
+        if v[-3] != "6061-T6 (SS)": gmass[k] *= k_light
 # PART|file|PLATE|a|b|t|holes|boss|mat|lib|g   or   PART|file|TUBE|R|Ri|length|mat|lib|g
 
 # ------------------------------------------------------------------ grids
@@ -342,6 +350,7 @@ json.dump(dict(nodes=len(nodes), shells=len(shells), beams=len(beams), masses=le
                brace_elems=[first_beam + i for i, b in enumerate(beams) if b[6] == "brace"]),
           open(os.path.join(HERE, "model_map.json"), "w"), indent=1)
 print(f"nodes {len(nodes)}, shells {len(shells)}, beams {len(beams)}, point masses {len(masses)}, rigid links {len(cer)}")
-print(f"mass {M * 1e3:.2f} g (CAD 4000.00), CoM ({cog[0]:.2f}, {cog[1]:.2f}, {cog[2]:.2f}) mm (CAD 50.00, 49.38, 173.79)")
+print(f"light case, equipment x{k_light:.4f}" if LIGHT else "design case")
+print(f"mass {M * 1e3:.2f} g (CAD 4000.00, light 3565.46), CoM ({cog[0]:.2f}, {cog[1]:.2f}, {cog[2]:.2f}) mm (CAD 50.00, 49.38, 173.79)")
 print("density scale (model geometry -> CAD mass):", {k: round(v, 3) for k, v in scale.items()})
 print("rail-end nodes:", sum(rail_end(k) for k in gridnode))

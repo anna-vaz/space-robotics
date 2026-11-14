@@ -17,7 +17,7 @@ gapping at 1.4 would be required if separation were safety-critical; it is not: 
   slip          : mu * Pp_min vs V (mu = 0.2), informative: if it slips, shear is carried by the screw (checked above)
   thread strip  : M3 internal thread in 6061-T6 spacer, engagement Le, shear area per FED-STD-H28 approximation
 """
-import csv, json, math, os
+import csv, json, math, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 d, p = 3.0, 0.5
@@ -37,10 +37,11 @@ Fsu_al, Le = 0.6 * 290.0, 6.0                           # 6061-T6 shear ultimate
 A_strip = math.pi * d3 * Le * 0.75                      # internal-thread shear area (0.75 effective)
 P_strip = Fsu_al * A_strip
 
+SUF = sys.argv[1] if len(sys.argv) > 1 else ""
 mp = json.load(open(os.path.join(HERE, "model_map.json")))
 rows, worst = [], {}
 for A in "XYZ":
-    B = {int(float(r["elem"])): {k: float(v) for k, v in r.items()} for r in csv.DictReader(open(os.path.join(HERE, f"beams_{A}.csv")))}
+    B = {int(float(r["elem"])): {k: float(v) for k, v in r.items()} for r in csv.DictReader(open(os.path.join(HERE, f"beams_{A}{SUF}.csv")))}
     for tag, els in mp["rod_elems"].items():
         for e, end in ((els[0], "bottom"), (els[-1], "top")):
             s = "I" if end == "bottom" else "J"; r = B[e]
@@ -65,5 +66,5 @@ L.append(f"... {len(rows)} joint-axis cases in total; minimum margins: separatio
          f"yield {min(r[8] for r in rows):+.2f}, ultimate {min(r[9] for r in rows):+.2f}, thread strip {min(r[10] for r in rows):+.2f}; "
          f"slip in {sum(not r[11] for r in rows)} cases")
 txt = "\n".join(L)
-open(os.path.join(HERE, "..", "results", "fasteners_5020.txt"), "w").write(txt + "\n")
+open(os.path.join(HERE, "..", "results", f"fasteners_5020{SUF}.txt"), "w").write(txt + "\n")
 print(txt)
