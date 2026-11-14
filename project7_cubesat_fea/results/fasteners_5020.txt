@@ -1,0 +1,21 @@
+NASA-STD-5020A check, M3 A2-70 screws at the spacer ends, GEVS qualification random vibration (3-sigma loads, Ansys)
+screw: As 5.03 mm2, Ptu 3522 N, Pty 2264 N, Psu 1942 N | torque 0.8 N m, K 0.2, Gamma 0.35: Pp_min 823 N, Pp_max 1800 N (358 MPa = 80 % of yield) | phi 0.55, n 1.0
+thread strip in 6061 spacer (Le 6.0 mm): 5871 N
+axis joint                                      end       F N    V N   M Nmm   Pt N  MS sep   MS y  MS ult MS strip no-slip
+Y    rod 13 @ (7.135, 9.995) z 115-128          bottom   39.1   70.4    1460    623   +0.10  +0.09   +2.95    +5.73 yes
+Y    rod 13 @ (92.865, 9.995) z 115-128         bottom   39.2   70.4    1459    623   +0.10  +0.09   +2.96    +5.73 yes
+Y    rod 13 @ (7.135, 90.005) z 115-128         bottom   34.0   70.0    1455    616   +0.11  +0.10   +3.00    +5.81 yes
+Y    rod 13 @ (92.865, 90.005) z 115-128        bottom   34.0   69.9    1454    616   +0.11  +0.10   +3.00    +5.81 yes
+Y    rod 35.9 @ (92.865, 9.995) z 189.6-225.5   top      41.9   59.9    1434    615   +0.11  +0.10   +3.02    +5.81 yes
+Y    rod 35.9 @ (7.135, 9.995) z 189.6-225.5    top      41.9   59.9    1433    615   +0.12  +0.10   +3.03    +5.82 yes
+Y    rod 35.9 @ (92.865, 90.005) z 189.6-225.5  top      36.9   59.7    1430    609   +0.13  +0.11   +3.07    +5.89 yes
+Y    rod 35.9 @ (7.135, 90.005) z 189.6-225.5   top      36.8   59.7    1429    609   +0.13  +0.11   +3.07    +5.89 yes
+X    rod 13 @ (7.135, 9.995) z 115-128          bottom   18.3   62.5    1298    537   +0.28  +0.26   +3.58    +6.80 yes
+X    rod 13 @ (92.865, 9.995) z 115-128         bottom   18.3   62.4    1297    537   +0.28  +0.26   +3.58    +6.81 yes
+X    rod 13 @ (7.135, 90.005) z 115-128         bottom   18.1   62.5    1297    537   +0.28  +0.26   +3.58    +6.81 yes
+X    rod 13 @ (92.865, 90.005) z 115-128        bottom   18.2   62.4    1295    536   +0.28  +0.26   +3.59    +6.82 yes
+X    rod 35.9 @ (7.135, 9.995) z 189.6-225.5    top      17.1   54.0    1293    534   +0.28  +0.27   +3.63    +6.85 yes
+X    rod 35.9 @ (92.865, 9.995) z 189.6-225.5   top      17.1   54.0    1293    534   +0.28  +0.27   +3.63    +6.85 yes
+X    rod 35.9 @ (7.135, 90.005) z 189.6-225.5   top      16.5   53.9    1292    533   +0.29  +0.27   +3.64    +6.86 yes
+X    rod 35.9 @ (92.865, 90.005) z 189.6-225.5  top      16.5   53.9    1291    533   +0.29  +0.27   +3.64    +6.87 yes
+... 270 joint-axis cases in total; minimum margins: separation +0.10, yield +0.09, ultimate +2.95, thread strip +5.73; slip in 0 cases
