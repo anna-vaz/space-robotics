@@ -1,0 +1,15 @@
+assembly CubeSat_3U_v5_nopanels.SLDASM, gravity scale 1.1685
+Buckling | 10 g Z | cantilever | h = 4 mm | 6 modes | 15/11/2026 7:53:15 AM
+fixed rail-end faces: 2
+  fixture err 0
+  gravity err 0/0
+  mesh err 0, nodes 305744, 19 s
+  solve err 0, 100 s
+  raw load factors (err 0): 1, 116.02, 2, 116.74, 3, 132.85, 4, 133.92, 5, 205.11, 6, 210.75
+  mode 1: shape peak at (50.0, 98.0, 170.3) mm in shear_panel-2
+  mode 2: shape peak at (50.0, 2.0, 170.3) mm in shear_panel-1
+  mode 3: shape peak at (50.0, 98.0, 192.1) mm in shear_panel-2
+  mode 4: shape peak at (50.0, 2.0, 192.1) mm in shear_panel-1
+  mode 5: shape peak at (49.9, 2.0, 196.0) mm in shear_panel-1
+  mode 6: shape peak at (50.0, 98.0, 84.6) mm in shear_panel-2
+done 15/11/2026 7:55:58 AM

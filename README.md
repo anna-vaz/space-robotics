@@ -57,6 +57,14 @@ Small, self-contained Python simulations of space robotic systems.
 
    ![Athens pass](project6_cubesat_adcs/figures/athens_pass.gif)
 
+7. **`project7_cubesat_fea/`** (SOLIDWORKS Simulation + Ansys MAPDL) – structural design of the same
+   3U CubeSat against launch loads: five scripted design iterations (C# API), 10 g, modal, buckling and
+   GEVS random vibration, cross-checked with an independently generated shell/beam/mass Ansys model
+   and hand calculations (Miles' equation within 3 %); NASA-STD-5020A bolted-joint check. All margins
+   positive; the bolted joints size the structure.
+
+   ![design history](project7_cubesat_fea/figures/step6_design_history.png)
+
 ## Setup
 
 ```bash

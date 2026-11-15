@@ -1,0 +1,2 @@
+copy saved: True (errors 0)
+suppressed 4 panels: mass 4.000 -> 3.423 kg; gravity scale for equal load = 1.1685
