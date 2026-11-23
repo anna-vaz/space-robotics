@@ -30,7 +30,8 @@ Relevant to planning and control of space robots for assembly, contact dynamics 
   the end effector **without rotating the base** (Reaction Null Space, as flown on
   ETS-VII). Exact, damped and minimum-norm control are compared at velocity and torque level,
   RNS singularities are mapped, and a sweep shows that the starting arm configuration decides
-  whether zero-reaction motion is possible.
+  whether zero-reaction motion is possible. The controllers are also run on a **Simscape
+  Multibody** plant: the base attitude matches the Python prediction to 1e-6°.
 
   ![reaction null space](project1b_reaction_null_space/figures/reaction_null_space.gif)
 

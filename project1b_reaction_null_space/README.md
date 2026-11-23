@@ -127,6 +127,14 @@ as a control problem.
 
 ![start sweep](figures/step5_start_sweep.png)
 
+## Check on a Simscape Multibody plant
+
+The same controllers drive the robot rebuilt in Simscape Multibody ([`simscape/`](simscape/)),
+where the base motion comes from the physics engine instead of the momentum equation. The base
+attitude agrees with the Python prediction to better than 1e-6° in all six cases: exact RNS
+keeps the base at 0.0000° on both paths, min-norm rotates it 6.33° / 13.56°, and task priority
+leaves 0.017° / 1.51°.
+
 ## Files
 
 | File | Content |
