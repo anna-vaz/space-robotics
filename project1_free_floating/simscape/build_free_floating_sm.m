@@ -1,4 +1,4 @@
-function build_free_floating_sm(modelName)
+function build_free_floating_sm(modelName, fixedBase)
 %BUILD_FREE_FLOATING_SM  Simscape Multibody model of the project-1 robot.
 %
 %   The robot is assembled from bodies, joints and frames; Simscape Multibody
@@ -12,8 +12,12 @@ function build_free_floating_sm(modelName)
 %   No gravity, no base actuation (free-floating). The two joints get the
 %   same quintic reference and PD gains as simulation.py.
 %   Parameters are read from the base workspace (see run_simscape_crosscheck.m).
+%
+%   fixedBase = true builds the SAME arm bolted to the ground instead: the Planar
+%   Joint is removed and the base frame is the world frame (x0 = y0 = th0 = 0).
 
 if nargin < 1, modelName = 'free_floating_sm'; end
+if nargin < 2, fixedBase = false; end
 if bdIsLoaded(modelName), close_system(modelName, 0); end
 f = [modelName '.slx'];
 if exist(f, 'file'), delete(f); end
@@ -29,10 +33,14 @@ add_block('sm_lib/Utilities/Mechanism Configuration', [m '/Mechanism Configurati
 add_block('nesl_utility/Solver Configuration', [m '/Solver Configuration'], 'Position', [40 400 80 440]);
 
 % ---- base: planar joint (x0, y0, th0), all three unactuated and sensed ----------
-add_block('sm_lib/Joints/Planar Joint', [m '/Base joint (x0 y0 th0)'], 'Position', [150 300 200 360]);
-bj = [m '/Base joint (x0 y0 th0)'];
-for ax = {'Px', 'Py', 'Rz'}
-    set_param(bj, [ax{1} 'SensePosition'], 'on', [ax{1} 'SenseVelocity'], 'on');
+if fixedBase
+    bjName = 'World';                       % base frame = world frame
+else
+    bjName = 'Base joint (x0 y0 th0)';
+    add_block('sm_lib/Joints/Planar Joint', [m '/' bjName], 'Position', [150 300 200 360]);
+    for ax = {'Px', 'Py', 'Rz'}
+        set_param([m '/' bjName], [ax{1} 'SensePosition'], 'on', [ax{1} 'SenseVelocity'], 'on');
+    end
 end
 add_block('sm_lib/Body Elements/Brick Solid', [m '/Base'], 'Position', [280 220 330 270]);
 solid([m '/Base'], '[a0 a0 0.2]', 'm0', '[0.55*I0 0.55*I0 I0]', [0.6 0.6 0.7]);
@@ -51,11 +59,11 @@ solid([m '/Link 2'], '[l2 0.08 0.08]', 'm2', '[0.01 I2 I2]', [0.2 0.5 0.85]);
 
 % ---- frame connections (B -> F) -----------------------------------------------
 C = @(a, ia, b, ib) add_line(m, port(a, 'RConn', ia), port(b, 'LConn', ib), 'autorouting', 'smart');
-C('World', 1, 'Base joint (x0 y0 th0)', 1);
+if ~fixedBase, C('World', 1, bjName, 1); end
 add_line(m, port('Mechanism Configuration', 'RConn', 1), port('World', 'RConn', 1), 'autorouting', 'smart');
 add_line(m, port('Solver Configuration', 'RConn', 1), port('World', 'RConn', 1), 'autorouting', 'smart');
-add_line(m, port('Base', 'RConn', 1), port('Base joint (x0 y0 th0)', 'RConn', 1), 'autorouting', 'smart');
-C('Base joint (x0 y0 th0)', 1, 'Base to shoulder', 1);
+add_line(m, port('Base', 'RConn', 1), port(bjName, 'RConn', 1), 'autorouting', 'smart');
+C(bjName, 1, 'Base to shoulder', 1);
 C('Base to shoulder', 1, 'Joint 1 (q1)', 1);
 C('Joint 1 (q1)', 1, 'Joint 1 to link 1 CoM', 1);
 add_line(m, port('Link 1', 'RConn', 1), port('Joint 1 to link 1 CoM', 'RConn', 1), 'autorouting', 'smart');
@@ -70,10 +78,15 @@ names = {'x0', 'dx0', 'y0', 'dy0', 'th0', 'dth0'};
 units = {'m', 'm/s', 'm', 'm/s', 'rad', 'rad/s'};
 for k = 1:6
     y = 420 + 45*(k-1);
-    ps2sl(m, ['PS ' names{k}], units{k}, [150 y 180 y+20]);
     gotoTag(m, names{k}, [220 y 270 y+20]);
-    add_line(m, port('Base joint (x0 y0 th0)', 'RConn', 1+k), port(['PS ' names{k}], 'LConn', 1), 'autorouting', 'smart');
-    add_line(m, ['PS ' names{k} '/1'], ['Goto ' names{k} '/1'], 'autorouting', 'smart');
+    if fixedBase                            % base does not move: log zeros
+        add_block('simulink/Sources/Constant', [m '/zero ' names{k}], 'Value', '0', 'Position', [150 y 180 y+20]);
+        add_line(m, ['zero ' names{k} '/1'], ['Goto ' names{k} '/1'], 'autorouting', 'smart');
+    else
+        ps2sl(m, ['PS ' names{k}], units{k}, [150 y 180 y+20]);
+        add_line(m, port(bjName, 'RConn', 1+k), port(['PS ' names{k}], 'LConn', 1), 'autorouting', 'smart');
+        add_line(m, ['PS ' names{k} '/1'], ['Goto ' names{k} '/1'], 'autorouting', 'smart');
+    end
 end
 jn = {'Joint 1 (q1)', 'Joint 2 (q2)'};
 for j = 1:2
