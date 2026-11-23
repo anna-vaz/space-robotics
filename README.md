@@ -21,7 +21,8 @@ Relevant to planning and control of space robots for assembly, contact dynamics 
 - **Project 1 – `project1_free_floating/`**: planar free-floating space manipulator
   (a satellite base carrying a 2-link robotic arm, no external forces).
   Shows how arm motion disturbs the base attitude and position, and verifies
-  conservation of linear and angular momentum.
+  conservation of linear and angular momentum. The hand-derived Lagrange equations are
+  cross-checked against an independent **Simscape Multibody** model (agreement 1e-10°).
 
   ![free-floating robot](project1_free_floating/figures/free_floating.gif)
 

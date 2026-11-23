@@ -82,6 +82,11 @@ stops, the base stops too (zero total momentum).
 
 ![conservation](figures/step4_conservation.png)
 
+3. **Independent model in Simscape Multibody ([`simscape/`](simscape/)):** the same robot
+   assembled from bodies and joints, with Simscape deriving its own equations of motion.
+   Same final base attitude (−30.65556°); the largest differences over the run are 7e-11° in
+   $\theta_0$ and 4e-13 m in the base position.
+
 ## Files
 
 | File | Purpose |
